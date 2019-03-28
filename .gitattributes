@@ -1,0 +1,4 @@
+Nintendo/DAuth/* filter=git-crypt diff=git-crypt
+BcatBotFramework/Core/Config/NintendoCdnConfig.cs filter=git-crypt diff=git-crypt
+BcatBotFramework/Core/Config/NintendoCdn/CachedToken.cs filter=git-crypt diff=git-crypt
+BcatBotFramework/Core/EdgeTokenManager.cs filter=git-crypt diff=git-crypt
