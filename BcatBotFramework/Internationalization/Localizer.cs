@@ -60,7 +60,7 @@ namespace BcatBotFramework.Internationalization
             }*/
 
             // TODO: Real localization
-            return $"String not found ({key}";
+            return $"String not found ({key}) - report this bug to OatmealDome";
         }
 
         public static Dictionary<Language, string> LocalizeToAllLanguages(string key)
