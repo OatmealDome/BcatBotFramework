@@ -178,7 +178,7 @@ namespace BcatBotFramework.Social.Discord
             // Send a message to this server that their guild has been deregistered
             Embed embed = new EmbedBuilder()
                 .WithTitle("Warning")
-                .WithDescription(Localizer.Localize("discord.guild.deregister", Language.EnglishUS))
+                .WithDescription(Localizer.Localize("discord.guild.deregister", guildSettings.DefaultLanguage))
                 .WithColor(Color.Orange)
                 .Build();
             
