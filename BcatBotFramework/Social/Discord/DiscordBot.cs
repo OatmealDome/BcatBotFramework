@@ -164,17 +164,17 @@ namespace BcatBotFramework.Social.Discord
 
                     // Start building an Embed
                     EmbedBuilder embedBuilder = new EmbedBuilder()
-                        .WithTitle(Localizer.Localize("Error", language))
+                        .WithTitle(Localizer.Localize("discord.error", language))
                         .WithColor(Color.Red);
 
                     switch (result.Error)
                     {
                         case CommandError.UnknownCommand:
-                            embedBuilder.WithDescription(Localizer.Localize("Unknown command. For a list of commands, see ``ssbu.help``.", language));
+                            embedBuilder.WithDescription(Localizer.Localize("discord.error.unknown_command", language));
 
                             break;
                         case CommandError.BadArgCount:
-                            embedBuilder.WithDescription(Localizer.Localize("Not enough arguments. See ``ssbu.help`` for command help.", language));
+                            embedBuilder.WithDescription(Localizer.Localize("discord.error.bad_arguments", language));
 
                             break;
                         case CommandError.UnmetPrecondition:
@@ -202,16 +202,16 @@ namespace BcatBotFramework.Social.Discord
                                 // Notify the logging channel
                                 await DiscordUtil.HandleException(executeResult.Exception, $"with command ``{userMessage.Content}``", commandContext.Guild, commandContext.Channel, commandContext.User);
                                 
-                                embedBuilder.WithDescription(Localizer.Localize("An error has occurred. SSBUBot's owners have been notified.", language));
-                                embedBuilder.AddField(Localizer.Localize("Type", language), executeResult.Exception.GetType().Name);
-                                embedBuilder.AddField(Localizer.Localize("Message", language), executeResult.Exception.Message);
+                                embedBuilder.WithDescription(Localizer.Localize("discord.error.exception", language));
+                                embedBuilder.AddField(Localizer.Localize("discord.error.type", language), executeResult.Exception.GetType().Name);
+                                embedBuilder.AddField(Localizer.Localize("discord.error.message", language), executeResult.Exception.Message);
                             }
                             
                             break;
                         default:
-                            embedBuilder.WithDescription(Localizer.Localize("An unknown error has occurred.", language));
-                            embedBuilder.AddField(Localizer.Localize("Type", language), result.Error);
-                            embedBuilder.AddField(Localizer.Localize("Message", language), result.ErrorReason);
+                            embedBuilder.WithDescription(Localizer.Localize("discord.error.unknown", language));
+                            embedBuilder.AddField(Localizer.Localize("discord.error.type", language), result.Error);
+                            embedBuilder.AddField(Localizer.Localize("discord.error.message", language), result.ErrorReason);
                             
                             break;
                     }
