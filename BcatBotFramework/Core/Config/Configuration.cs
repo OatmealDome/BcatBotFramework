@@ -52,6 +52,13 @@ namespace BcatBotFramework.Core.Config
             set;
         }
 
+        [JsonProperty("Localizer")]
+        public LocalizerConfig LocalizerConfig
+        {
+            get;
+            set;
+        }
+
         public bool FirstRunCompleted
         {
             get;
