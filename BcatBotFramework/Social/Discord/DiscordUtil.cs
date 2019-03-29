@@ -97,7 +97,7 @@ namespace BcatBotFramework.Social.Discord
                 }
                 catch (Exception)
                 {
-                    throw new LocalizedException("This language code is invalid. You can see a list of valid language codes by running ``ssbu.languages``.");
+                    throw new LocalizedException("discord.error.bad_code");
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace BcatBotFramework.Social.Discord
             // Build an Embed
             Embed embed = new EmbedBuilder()
                 .WithTitle("Welcome")
-                .WithDescription("Thank you for adding SSBUBot to your server! Please have someone with the \"Manage Server\" permission follow the setup instructions at [https://smash.oatmealdome.me/setup](https://smash.oatmealdome.me/setup).\n\nIf you have received this message more than once, this is because you have not run the ``ssbu.register`` command in this server. This is a reminder to do so.")
+                .WithDescription(Localizer.Localize("discord.guild.join", Language.EnglishUS))
                 .WithColor(Color.Blue)
                 .Build();
 
@@ -178,7 +178,7 @@ namespace BcatBotFramework.Social.Discord
             // Send a message to this server that their guild has been deregistered
             Embed embed = new EmbedBuilder()
                 .WithTitle("Warning")
-                .WithDescription("Your server cannot receive Smash notifications because SSBUBot cannot send messages to the registered channel. Please check that the channel exists and that SSBUBot has permissions to send messages to it. Someone with the \"Manage Server\" permission must run the ``ssbu.register`` command again to re-register this server once the issue has been resolved. Go to [https://smash.oatmealdome.me/setup](https://smash.oatmealdome.me/setup) for more information.")
+                .WithDescription(Localizer.Localize("discord.guild.deregister", Language.EnglishUS))
                 .WithColor(Color.Orange)
                 .Build();
             
