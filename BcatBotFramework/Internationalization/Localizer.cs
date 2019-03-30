@@ -69,7 +69,7 @@ namespace BcatBotFramework.Internationalization
             Dictionary<Language, string> valueDict = new Dictionary<Language, string>();
 
             // Populate the Dictionary
-            foreach (Language language in Nintendo.SmashUltimate.Bcat.Container.LanguageOrder)
+            foreach (Language language in LanguageExtensions.GetAllLanguages())
             {
                 // Localize the key to this Language
                 valueDict.Add(language, Localize(key, language));
@@ -100,7 +100,7 @@ namespace BcatBotFramework.Internationalization
             Dictionary<Language, string> valueDict = new Dictionary<Language, string>();
 
             // Populate the Dictionary
-            foreach (Language language in Nintendo.SmashUltimate.Bcat.Container.LanguageOrder)
+            foreach (Language language in LanguageExtensions.GetAllLanguages())
             {
                 // Localize the key to this Language
                 valueDict.Add(language, value);
@@ -125,7 +125,7 @@ namespace BcatBotFramework.Internationalization
             Dictionary<Language, string> valueDict = new Dictionary<Language, string>();
 
             // Populate the Dictionary
-            foreach (Language language in Nintendo.SmashUltimate.Bcat.Container.LanguageOrder)
+            foreach (Language language in LanguageExtensions.GetAllLanguages())
             {
                 // Localize the key to this Language
                 valueDict.Add(language, LocalizeDateTime(dateTime, language));

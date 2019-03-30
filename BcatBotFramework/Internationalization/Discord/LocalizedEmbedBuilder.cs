@@ -15,7 +15,7 @@ namespace BcatBotFramework.Internationalization.Discord
             embedBuilders = new Dictionary<Language, EmbedBuilder>();
 
             // Populate the Dictionary with blank EmbedBuilders
-            foreach (Language language in Nintendo.SmashUltimate.Bcat.Container.LanguageOrder)
+            foreach (Language language in LanguageExtensions.GetAllLanguages())
             {
                 embedBuilders.Add(language, new EmbedBuilder());
             }
