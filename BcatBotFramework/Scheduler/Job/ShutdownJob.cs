@@ -39,6 +39,9 @@ namespace BcatBotFramework.Scheduler.Job
             // Shutdown the HandlerMapper
             HandlerMapper.Dispose();
 
+            // Shutdown anything app-specific
+            ShutdownAppSpecificItems();
+
             // Save the configuration
             Configuration.LoadedConfiguration.Write();
 
