@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using BcatBotFramework.Core.Config;
-using SmashBcatDetector.Util;
 
 namespace BcatBotFramework.Social.Discord.Precondition
 {

@@ -1,5 +1,3 @@
-using Nintendo.SmashUltimate.Bcat;
-
 namespace BcatBotFramework.Difference
 {
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
