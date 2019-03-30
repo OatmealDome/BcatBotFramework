@@ -8,7 +8,6 @@ using Quartz;
 using BcatBotFramework.Core.Config;
 using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
-using Nintendo.SmashUltimate.Bcat;
 using BcatBotFramework.Scheduler;
 
 namespace BcatBotFramework.Scheduler.Job
