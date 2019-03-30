@@ -118,10 +118,10 @@ namespace Nintendo.Bcat
             return Bcat.News.News.Deserialize(rawNews);
         }
 
-        public static async Task<Topic> GetDataTopic(string topicId, string titleId, string passphrase)
+        public static async Task<Topic> GetDataTopic(string titleId, string passphrase)
         {
             // Format the URL
-            string url = string.Format(BCAT_TOPIC_URL, topicId);
+            string url = string.Format(BCAT_TOPIC_URL, "nx_data_" + titleId.ToLower());
 
             // Fetch the data
             return MessagePackSerializer.Deserialize<Topic>(await DownloadContainerAndDecrypt(url, titleId, passphrase));
