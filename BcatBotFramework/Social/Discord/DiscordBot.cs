@@ -131,7 +131,13 @@ namespace BcatBotFramework.Social.Discord
         private static async Task MessageReceived(SocketMessage socketMessage)
         {
             // Skip if this is not a real user
-            if (socketMessage.Source == MessageSource.Bot || socketMessage.Source == MessageSource.Webhook || socketMessage.Source == MessageSource.System)
+            if (socketMessage.Source == MessageSource.Webhook || socketMessage.Source == MessageSource.System)
+            {
+                return;
+            }
+
+            // Skip bots that aren't QA
+            if (socketMessage.Source == MessageSource.Bot && socketMessage.Author.Id != 563718045806362642)
             {
                 return;
             }
