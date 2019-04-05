@@ -17,7 +17,7 @@ namespace BcatBotFramework.Social.Discord.Precondition
                 return Task.FromResult(PreconditionResult.FromSuccess());
             }
 
-            return Task.FromResult(PreconditionResult.FromError("You are not allowed to do this."));
+            return Task.FromResult(PreconditionResult.FromError("~loc,discord.error.not_admin"));
         }
     }
 
