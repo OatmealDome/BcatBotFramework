@@ -187,8 +187,16 @@ namespace BcatBotFramework.Social.Discord
                             // Get the PreconditionResult
                             PreconditionResult preconditionResult = (PreconditionResult)result;
 
+                            // Check if the error reason contains a localizable
+                            string description = result.ErrorReason;
+                            if (result.ErrorReason.StartsWith("~loc"))
+                            {
+                                // Localize the error reason
+                                description = Localizer.Localize(description.Split(',')[1], language);
+                            }
+
                             // Set the description
-                            embedBuilder.WithDescription(Localizer.Localize(result.ErrorReason, language));
+                            embedBuilder.WithDescription(description);
 
                             break;
                         case CommandError.Exception:
