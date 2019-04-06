@@ -112,6 +112,92 @@ namespace Nintendo.Bcat
             }
         }
 
+        public static string GetSeadCode(this Language language)
+        {
+            switch (language)
+            {
+                case Language.Chinese:
+                    return "CNzh";
+                //case Language.ChineseSimplified:
+                //    return "zh-Hans";
+                case Language.ChineseTaiwan:
+                    return "TWzh";
+                //case Language.ChineseTraditional:
+                //    return "zh-Hant";
+                case Language.Dutch:
+                    return "EUnl";
+                case Language.EnglishUS:
+                    return "USen";
+                case Language.EnglishUK:
+                    return "EUen";
+                case Language.FrenchFR:
+                    return "EUfr";
+                case Language.FrenchCA:
+                    return "USfr";
+                case Language.German:
+                    return "EUde";
+                case Language.Italian:
+                    return "EUit";
+                case Language.Japanese:
+                    return "JPja";
+                case Language.Korean:
+                    return "KRko";
+                case Language.Portuguese:
+                    return "EUpt";
+                case Language.Russian:
+                    return "EUru";
+                case Language.SpanishES:
+                    return "EUes";
+                case Language.SpanishLA:
+                    return "USes";
+                default:
+                    throw new Exception("Invalid language or unknown code");
+            }
+        }
+
+        public static Language FromSeadCode(string code)
+        {
+            switch (code.ToLower())
+            {
+                case "cnzh":
+                    return Language.Chinese;
+                //case "zh-hans":
+                //    return Language.ChineseSimplified;
+                case "twzh":
+                    return Language.ChineseTaiwan;
+                //case "zh-hant":
+                //    return Language.ChineseTraditional;
+                case "eunl":
+                    return Language.Dutch;
+                case "usen":
+                    return Language.EnglishUS;
+                case "euen":
+                    return Language.EnglishUK;
+                case "eufr":
+                    return Language.FrenchFR;
+                case "usfr":
+                    return Language.FrenchCA;
+                case "eude":
+                    return Language.German;
+                case "euit":
+                    return Language.Italian;
+                case "jpja":
+                    return Language.Japanese;
+                case "krko":
+                    return Language.Korean;
+                case "eupt":
+                    return Language.Portuguese;
+                case "euru":
+                    return Language.Russian;
+                case "eues":
+                    return Language.SpanishES;
+                case "uses":
+                    return Language.SpanishLA;
+                default:
+                    throw new Exception("Unsupported language code");
+            }
+        }
+
         public static string ToCultureInfoCode(this Language language)
         {
             switch (language)
