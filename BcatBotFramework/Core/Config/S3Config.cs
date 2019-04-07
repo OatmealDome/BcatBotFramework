@@ -1,6 +1,6 @@
 namespace BcatBotFramework.Core.Config
 {
-    public class S3Config
+    public class S3Config : ISubConfiguration
     {
         public string ServiceUrl
         {
@@ -24,6 +24,14 @@ namespace BcatBotFramework.Core.Config
         {
             get;
             set;
+        }
+
+        public void SetDefaults()
+        {
+            ServiceUrl = "https://s3.example.com";
+            BucketName = "bucket";
+            AccessKey = "cafebabe";
+            AccessKeySecret = "deadbeef";
         }
         
     }

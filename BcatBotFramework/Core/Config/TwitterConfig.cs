@@ -3,7 +3,7 @@ using BcatBotFramework.Core.Config.Twitter;
 
 namespace BcatBotFramework.Core.Config
 {
-    public class TwitterConfig
+    public class TwitterConfig : ISubConfiguration
     {
         public Dictionary<string, CachedTwitterCredentials> TwitterCredentials
         {
@@ -22,6 +22,13 @@ namespace BcatBotFramework.Core.Config
             get;
             set;
         }
-        
+
+        public void SetDefaults()
+        {
+            TwitterCredentials = new Dictionary<string, CachedTwitterCredentials>();
+            CharacterCounterBinary = "/home/oatmealdome/characterCounter";
+            IsActivated = false;
+        }
+
     }
 }

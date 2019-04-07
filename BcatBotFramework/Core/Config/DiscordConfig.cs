@@ -5,7 +5,7 @@ using BcatBotFramework.Core.Config.Discord;
 
 namespace BcatBotFramework.Core.Config
 {
-    public class DiscordConfig
+    public class DiscordConfig : ISubConfiguration
     {
         public string Token
         {
@@ -72,6 +72,29 @@ namespace BcatBotFramework.Core.Config
             get;
             set;
         }
-        
+
+        public void SetDefaults()
+        {
+            Token = "cafebabe";
+            ClientId = 0;
+            Permissions = 322624;
+            AdministratorIds = new List<ulong>()
+            {
+                112966101368901632, // OatmealDome
+                180994059542855681 // Simonx22
+            };
+            LoggingTargetChannel = new GuildSettings()
+            {
+                GuildId = 194559160572968961, // OatmealDome Test Server
+                TargetChannelId = 194559160572968961, // #general
+                DefaultLanguage = Language.EnglishUS
+            };
+            CommandPrefix = "test.";
+            AlternatorRate = 10;
+            MessageCacheSize = 10;
+            InteractiveMessageTimeout = 5; // minutes
+            CommandStatistics = new ConcurrentDictionary<string, ulong>();
+        }
+
     }
 }
