@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using BcatBotFramework.Core.Config.Scheduler;
+using System;
 
 namespace BcatBotFramework.Core.Config
 {
@@ -71,9 +72,9 @@ namespace BcatBotFramework.Core.Config
             set;
         }
 
-        public static void Load<T>(string path) where T : Configuration
+        public static void Load(Type configType, string path)
         {
-            LoadedConfiguration = (Configuration)JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            LoadedConfiguration = (Configuration)JsonConvert.DeserializeObject(File.ReadAllText(path), configType);
             ConfigurationFilePath = path;
         }
 
