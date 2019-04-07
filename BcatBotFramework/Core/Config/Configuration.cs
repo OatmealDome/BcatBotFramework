@@ -82,5 +82,26 @@ namespace BcatBotFramework.Core.Config
             File.WriteAllText(ConfigurationFilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
 
+        public void SetDefaults()
+        {
+            CdnConfig = new NintendoCdnConfig();
+            CdnConfig.SetDefaults();
+            KeysetConfig = new KeysetConfig();
+            KeysetConfig.SetDefaults();
+            DiscordConfig = new DiscordConfig();
+            DiscordConfig.SetDefaults();
+            TwitterConfig = new TwitterConfig();
+            TwitterConfig.SetDefaults();
+            JobSchedules = new Dictionary<string, JobSchedule>();
+            S3Config = new S3Config();
+            S3Config.SetDefaults();
+            LocalizerConfig = new LocalizerConfig();
+            LocalizerConfig.SetDefaults();
+            FirstRunCompleted = false;
+            IsProduction = false;
+        }
+
+        public abstract void SetAppSpecificDefaults();
+
     }
 }
