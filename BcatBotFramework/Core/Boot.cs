@@ -73,6 +73,9 @@ namespace BcatBotFramework.Core
             // Initialize the HandlerMapper
             HandlerMapper.Initialize();
 
+            // Initialize the KeysetManager
+            KeysetManager.Initialize();
+
             // Initialize DAuth
             DAuthApi.Initialize();
 
