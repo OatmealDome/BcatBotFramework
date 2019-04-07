@@ -16,6 +16,9 @@ namespace BcatBotFramework.Scheduler.Job
     {
         public async Task Execute(IJobExecutionContext context)
         {
+            // Run app-specific boot tasks
+            await RunAppSpecificBootTasks();
+
             await DiscordBot.LoggingChannel.SendMessageAsync($"**[BootHousekeepingJob]** Processing joined/left guilds");
 
             // Get a list of guilds
@@ -53,9 +56,6 @@ namespace BcatBotFramework.Scheduler.Job
             await DiscordBot.LoggingChannel.SendMessageAsync($"**[BootHousekeepingJob]** Processing deregistrations because of no write permissions");
 
             await DiscordUtil.FindBadGuilds();
-
-            // Run app-specific boot tasks
-            await RunAppSpecificBootTasks();
 
             await DiscordBot.LoggingChannel.SendMessageAsync($"**[BootHousekeepingJob]** Saving configuration");
 
