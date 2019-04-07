@@ -99,9 +99,11 @@ namespace BcatBotFramework.Scheduler
 
         public static async Task ScheduleJob<T>(string jobName)
         {
-            // Get the Type
-            Type type = typeof(T);
+            await ScheduleJob(typeof(T), jobName);
+        }
 
+        public static async Task ScheduleJob(Type type, string jobName)
+        {
             // Create the job
             IJobDetail jobDetail = JobBuilder.Create(type)
                 .WithIdentity(type.Name + jobName)
