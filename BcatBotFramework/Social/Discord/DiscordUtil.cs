@@ -67,16 +67,16 @@ namespace BcatBotFramework.Social.Discord
             await DiscordBot.LoggingChannel.SendMessageAsync("**[Exception]** " + pingList, embed: embedBuilder.Build());
         }
 
-        public static Language GetDefaultLanguage(SocketCommandContext context, string specifiedLanguage = null)
+        public static Language GetDefaultLanguage(IGuild guild, string specifiedLanguage = null)
         {
             // Check if a language was specified
             if (specifiedLanguage == null)
             {
                 // Check if this is not a DM
-                if (context.Guild != null)
+                if (guild != null)
                 {
                     // Attempt to get the GuildSettings for this guild
-                    GuildSettings guildSettings = Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(x => x.GuildId == context.Guild.Id).FirstOrDefault();
+                    GuildSettings guildSettings = Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(x => x.GuildId == guild.Id).FirstOrDefault();
 
                     // Check if there is a GuildSettings
                     if (guildSettings != null)

@@ -166,7 +166,7 @@ namespace BcatBotFramework.Social.Discord
                 if (!result.IsSuccess)
                 {
                     // Get the language for this Guild
-                    Language language = DiscordUtil.GetDefaultLanguage(commandContext);
+                    Language language = DiscordUtil.GetDefaultLanguage(commandContext.Guild);
 
                     // Start building an Embed
                     EmbedBuilder embedBuilder = new EmbedBuilder()
