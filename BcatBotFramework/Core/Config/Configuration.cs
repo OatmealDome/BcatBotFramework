@@ -101,7 +101,7 @@ namespace BcatBotFramework.Core.Config
             IsProduction = false;
         }
 
-        public abstract void SetAppSpecificDefaults();
+        protected abstract void SetAppSpecificDefaults();
 
     }
 }
