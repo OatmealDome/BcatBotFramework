@@ -81,7 +81,13 @@ namespace BcatBotFramework.Difference
 
         public static SortedList<int, MethodInfo> GetHandlers(int type, DifferenceType differenceType)
         {
-            return typeCatalog[type][differenceType];
+            if (!typeCatalog.TryGetValue(type, out Dictionary<DifferenceType, SortedList<int, MethodInfo>> dict)
+                || !dict.TryGetValue(differenceType, out SortedList<int, MethodInfo> sortedList))
+            {
+                return new SortedList<int, MethodInfo>();
+            }
+            
+            return sortedList;
         }
 
     }
