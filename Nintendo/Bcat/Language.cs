@@ -4,9 +4,7 @@ namespace Nintendo.Bcat
 {
     public enum Language
     {
-        Chinese, // what's the diff between this and traditional?
         ChineseSimplified,
-        ChineseTaiwan,
         ChineseTraditional,
         Dutch,
         EnglishUS,
@@ -29,12 +27,8 @@ namespace Nintendo.Bcat
         {
             switch (language)
             {
-                case Language.Chinese:
-                    return "zh-CN";
                 case Language.ChineseSimplified:
                     return "zh-Hans";
-                case Language.ChineseTaiwan:
-                    return "zh-TW";
                 case Language.ChineseTraditional:
                     return "zh-Hant";
                 case Language.Dutch:
@@ -73,11 +67,9 @@ namespace Nintendo.Bcat
             switch (code.ToLower())
             {
                 case "zh-cn":
-                    return Language.Chinese;
                 case "zh-hans":
                     return Language.ChineseSimplified;
                 case "zh-tw":
-                    return Language.ChineseTaiwan;
                 case "zh-hant":
                     return Language.ChineseTraditional;
                 case "nl":
@@ -116,14 +108,10 @@ namespace Nintendo.Bcat
         {
             switch (language)
             {
-                case Language.Chinese:
+                case Language.ChineseSimplified:
                     return "CNzh";
-                //case Language.ChineseSimplified:
-                //    return "zh-Hans";
-                case Language.ChineseTaiwan:
+                case Language.ChineseTraditional:
                     return "TWzh";
-                //case Language.ChineseTraditional:
-                //    return "zh-Hant";
                 case Language.Dutch:
                     return "EUnl";
                 case Language.EnglishUS:
@@ -160,13 +148,9 @@ namespace Nintendo.Bcat
             switch (code.ToLower())
             {
                 case "cnzh":
-                    return Language.Chinese;
-                //case "zh-hans":
-                //    return Language.ChineseSimplified;
+                    return Language.ChineseSimplified;
                 case "twzh":
-                    return Language.ChineseTaiwan;
-                //case "zh-hant":
-                //    return Language.ChineseTraditional;
+                    return Language.ChineseTraditional;
                 case "eunl":
                     return Language.Dutch;
                 case "usen":
