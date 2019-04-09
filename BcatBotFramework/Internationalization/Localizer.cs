@@ -65,11 +65,16 @@ namespace BcatBotFramework.Internationalization
 
         public static Dictionary<Language, string> LocalizeToAllLanguages(string key)
         {
+            return LocalizeToAllLanguages(key, LanguageExtensions.GetAllLanguages());
+        }
+
+        public static Dictionary<Language, string> LocalizeToAllLanguages(string key, IEnumerable<Language> languages)
+        {
             // Create a new Dictionary
             Dictionary<Language, string> valueDict = new Dictionary<Language, string>();
 
             // Populate the Dictionary
-            foreach (Language language in LanguageExtensions.GetAllLanguages())
+            foreach (Language language in languages)
             {
                 // Localize the key to this Language
                 valueDict.Add(language, Localize(key, language));
@@ -81,8 +86,13 @@ namespace BcatBotFramework.Internationalization
 
         public static Dictionary<Language, string> LocalizeToAllLanguagesWithFormat(string key, params object[] objs)
         {
+            return LocalizeToAllLanguagesWithFormat(key, LanguageExtensions.GetAllLanguages(), objs);
+        }
+
+        public static Dictionary<Language, string> LocalizeToAllLanguagesWithFormat(string key, IEnumerable<Language> languages, params object[] objs)
+        {
             // Localize the key
-            Dictionary<Language, string> valueDict = LocalizeToAllLanguages(key);
+            Dictionary<Language, string> valueDict = LocalizeToAllLanguages(key, languages);
 
             // Format the values
             foreach (KeyValuePair<Language, string> pair in valueDict.ToList())
