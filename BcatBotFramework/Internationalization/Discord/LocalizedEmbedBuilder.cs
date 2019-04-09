@@ -9,13 +9,13 @@ namespace BcatBotFramework.Internationalization.Discord
         // EmbedBuilders for all Languages
         private Dictionary<Language, EmbedBuilder> embedBuilders;
 
-        public LocalizedEmbedBuilder()
+        public LocalizedEmbedBuilder(IEnumerable<Language> supportedLanguages)
         {
             // Create a new Dictionary for EmbedBuilders
             embedBuilders = new Dictionary<Language, EmbedBuilder>();
 
             // Populate the Dictionary with blank EmbedBuilders
-            foreach (Language language in LanguageExtensions.GetAllLanguages())
+            foreach (Language language in supportedLanguages)
             {
                 embedBuilders.Add(language, new EmbedBuilder());
             }
