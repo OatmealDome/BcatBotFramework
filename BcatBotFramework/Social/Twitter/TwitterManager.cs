@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BcatBotFramework.Core.Config;
 using BcatBotFramework.Core.Config.Twitter;
+using Tweetinvi;
 
 namespace BcatBotFramework.Social.Twitter
 {
@@ -11,6 +12,9 @@ namespace BcatBotFramework.Social.Twitter
 
         public static void Initialize()
         {
+            // Don't swallow Twitter exceptions
+            ExceptionHandler.SwallowWebExceptions = false;
+            
             // Create a new Dictionary
             Accounts = new Dictionary<string, TwitterAccount>();
 
