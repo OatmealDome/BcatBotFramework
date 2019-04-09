@@ -53,11 +53,11 @@ namespace BcatBotFramework.Internationalization
             }
 
             // Try to get the localization in en-US
-            /*if (Localizations[Language.EnglishUS].TryGetValue(key, out string value))
+            if (Localizations[Language.EnglishUS].TryGetValue(key, out string englishValue))
             {
                 // Return the value
-                return value;
-            }*/
+                return englishValue;
+            }
 
             // TODO: Real localization
             return $"String not found ({key}) - report this bug to OatmealDome";
