@@ -175,10 +175,12 @@ namespace BcatBotFramework.Social.Discord
 
                     switch (result.Error)
                     {
-                        //case CommandError.UnknownCommand:
-                        //    embedBuilder.WithDescription(Localizer.Localize("discord.error.unknown_command", language));
-                        //
-                        //    break;
+                        case CommandError.UnknownCommand:
+                            //embedBuilder.WithDescription(Localizer.Localize("discord.error.unknown_command", language));
+                            //
+                            //break;
+
+                            return; // ignore
                         case CommandError.BadArgCount:
                             embedBuilder.WithDescription(Localizer.Localize("discord.error.bad_arguments", language));
 
