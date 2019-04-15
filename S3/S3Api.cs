@@ -38,15 +38,15 @@ namespace S3
             initialized = false;
         }
 
-        public static void TransferFile(byte[] data, string remoteDirectory, string remoteFile)
+        public static void TransferFile(byte[] data, string remoteDirectory, string remoteFile, string contentType = null)
         {
             using (MemoryStream memoryStream = new MemoryStream(data))
             {
-                TransferFile(memoryStream, remoteDirectory, remoteFile);
+                TransferFile(memoryStream, remoteDirectory, remoteFile, contentType);
             }
         }
 
-        public static void TransferFile(Stream inputStream, string remoteDirectory, string remoteFile)
+        public static void TransferFile(Stream inputStream, string remoteDirectory, string remoteFile, string contentType = null)
         {
             TransferUtilityUploadRequest request = new TransferUtilityUploadRequest()
             {
@@ -58,18 +58,10 @@ namespace S3
                 AutoCloseStream = false
             };
 
-            TransferFile(request);
-        }
-
-        public static void TransferFile(string localPath, string remoteDirectory)
-        {
-            TransferUtilityUploadRequest request = new TransferUtilityUploadRequest()
+            if (contentType != null)
             {
-                BucketName = Configuration.LoadedConfiguration.S3Config.BucketName + remoteDirectory,
-                Key = Path.GetFileName(localPath),
-                FilePath = localPath,
-                CannedACL = S3CannedACL.PublicRead
-            };
+                request.ContentType = contentType;
+            }
 
             TransferFile(request);
         }
