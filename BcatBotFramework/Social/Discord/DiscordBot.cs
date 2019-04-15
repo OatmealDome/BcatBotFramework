@@ -159,7 +159,7 @@ namespace BcatBotFramework.Social.Discord
             if (userMessage.HasStringPrefix(Configuration.LoadedConfiguration.DiscordConfig.CommandPrefix, ref commandPosition))
             {
                 // Trigger typing
-                await commandContext.Channel.TriggerTypingAsync();
+                //await commandContext.Channel.TriggerTypingAsync();
 
                 // Execute the command
                 IResult result = await CommandService.ExecuteAsync(commandContext, commandPosition, null);
