@@ -60,6 +60,12 @@ namespace BcatBotFramework.Core.Config
             set;
         }
 
+        public List<string> CompletedOneTimeTasks
+        {
+            get;
+            set;
+        }
+
         public bool FirstRunCompleted
         {
             get;
@@ -98,6 +104,7 @@ namespace BcatBotFramework.Core.Config
             S3Config.SetDefaults();
             LocalizerConfig = new LocalizerConfig();
             LocalizerConfig.SetDefaults();
+            CompletedOneTimeTasks = new List<string>();
             FirstRunCompleted = false;
             IsProduction = false;
         }

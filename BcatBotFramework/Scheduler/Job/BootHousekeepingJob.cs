@@ -9,6 +9,8 @@ using BcatBotFramework.Core.Config;
 using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Scheduler;
+using System.Reflection;
+using BcatBotFramework.Core;
 
 namespace BcatBotFramework.Scheduler.Job
 {
@@ -18,6 +20,15 @@ namespace BcatBotFramework.Scheduler.Job
         {
             // Run app-specific boot tasks
             await RunAppSpecificBootTasks();
+
+            // Run one-time tasks
+            await DiscordBot.LoggingChannel.SendMessageAsync($"**[BootHousekeepingJob]** Running one-time tasks");
+
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(OneTimeTask))))
+            {
+                // Create a new instance and run it
+                await ((OneTimeTask)Activator.CreateInstance(type)).RunImpl();
+            }
 
             await DiscordBot.LoggingChannel.SendMessageAsync($"**[BootHousekeepingJob]** Processing joined/left guilds");
 
