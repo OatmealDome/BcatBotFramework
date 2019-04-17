@@ -27,7 +27,7 @@ namespace Nintendo.Bcat
         private static string BCAT_QLAUNCH_TITLE_ID = "0100000000001000";
         private static string BCAT_QLAUNCH_PASSPHRASE = "acda358b4d32d17fd4037c1b5e0235427a8563f93b0fdb42a4a536ee95bbf80f";
 
-        private static string BCAT_USER_AGENT = "libcurl (nnBcat; 789f928b-138e-4b2f-afeb-1acae8c21d897; SDK 7.3.0.0)";
+        private static string BCAT_USER_AGENT = "libcurl (nnBcat; 789f928b-138e-4b2f-afeb-1acae8c21d897; SDK 8.2.99.0)";
         
         // Generated on initialization
         private static HttpClient httpClient;
