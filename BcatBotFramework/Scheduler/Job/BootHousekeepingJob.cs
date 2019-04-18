@@ -63,11 +63,7 @@ namespace BcatBotFramework.Scheduler.Job
             {
                 await DiscordUtil.ProcessLeftGuild(id, null);
             }
-
-            await DiscordBot.LoggingChannel.SendMessageAsync($"**[BootHousekeepingJob]** Processing deregistrations because of no write permissions");
-
-            await DiscordUtil.FindBadGuilds();
-
+            
             await DiscordBot.LoggingChannel.SendMessageAsync($"**[BootHousekeepingJob]** Saving configuration");
 
             // Save the configuration
