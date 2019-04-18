@@ -139,7 +139,7 @@ namespace BcatBotFramework.Social.Discord
         public static async Task FindBadGuilds()
         {
             // Find every guild that registered a channel we can't write to
-            IEnumerable<GuildSettings> badGuilds = Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(guildSettings =>
+            List<GuildSettings> badGuilds = Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(guildSettings =>
             {
                 // Get the SocketGuild
                 SocketGuild socketGuild = DiscordBot.GetGuild(guildSettings.GuildId);
@@ -160,6 +160,14 @@ namespace BcatBotFramework.Social.Discord
                 return !permissions.Has(ChannelPermission.SendMessages);
             }).ToList();
 
+            // Skip deregistration if there are a large number of guilds to deregister
+            if (badGuilds.Count > 5)
+            {
+                await DiscordBot.LoggingChannel.SendMessageAsync($"**[DiscordUtil]** Skipping deregistration, there seems to be an excessive amount of guilds to deregister ({badGuilds.Count})");
+
+                return;
+            }
+            
             foreach (GuildSettings guildSettings in badGuilds)
             {
                 // Deregister the guild
