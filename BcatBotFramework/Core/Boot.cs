@@ -96,7 +96,10 @@ namespace BcatBotFramework.Core
             }
 
             // Wait 10 seconds in production to try avoiding deregistration bug
-            await Task.Delay(1000 * 10);
+            if (Configuration.LoadedConfiguration.IsProduction)
+            {
+                await Task.Delay(1000 * 10);
+            }
 
             // Print out to the logging channel that we're initialized
             await DiscordBot.LoggingChannel.SendMessageAsync("\\*\\*\\* **Initialized**");
