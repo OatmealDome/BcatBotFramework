@@ -136,7 +136,7 @@ namespace BcatBotFramework.Social.Discord
             }
         }
 
-        public static async Task FindBadGuilds()
+        public static async Task FindBadGuilds(bool ignoreExcessiveAmount = false)
         {
             // Find every guild that registered a channel we can't write to
             List<GuildSettings> badGuilds = Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(guildSettings =>
@@ -161,7 +161,7 @@ namespace BcatBotFramework.Social.Discord
             }).ToList();
 
             // Skip deregistration if there are a large number of guilds to deregister
-            if (badGuilds.Count > 5)
+            if (badGuilds.Count > 5 && !ignoreExcessiveAmount)
             {
                 await DiscordBot.LoggingChannel.SendMessageAsync($"**[DiscordUtil]** Skipping deregistration, there seems to be an excessive amount of guilds to deregister ({badGuilds.Count})");
 
