@@ -41,7 +41,7 @@ namespace BcatBotFramework.Core
             }
 
             // Get the type of the Configuration
-            Type configType = GetSubclassOfType<Configuration>();
+            Type configType = TypeUtils.GetSubclassOfType<Configuration>();
 
             // Declare variable to hold the configuration
             Configuration configuration;
@@ -50,7 +50,7 @@ namespace BcatBotFramework.Core
             if (!File.Exists(LOCAL_CONFIGURATION))
             {
                 // Create a new dummy Configuration
-                configuration = (Configuration)Activator.CreateInstance(GetSubclassOfType<Configuration>());
+                configuration = (Configuration)Activator.CreateInstance(TypeUtils.GetSubclassOfType<Configuration>());
 
                 // Write out the default config
                 configuration.Write();
@@ -106,13 +106,13 @@ namespace BcatBotFramework.Core
             await DiscordBot.LoggingChannel.SendMessageAsync("\\*\\*\\* **Initialized**");
 
             // Schedule the BootHousekeepingJob
-            await QuartzScheduler.ScheduleJob(GetSubclassOfType<BootHousekeepingJob>(), "Immediate");
+            await QuartzScheduler.ScheduleJob(TypeUtils.GetSubclassOfType<BootHousekeepingJob>(), "Immediate");
 
             // Register the SIGTERM handler
             AssemblyLoadContext.Default.Unloading += async x =>
             {
                 // Get the Shutdown subclass
-                Type shutdownType = GetSubclassOfType<Shutdown>();
+                Type shutdownType = TypeUtils.GetSubclassOfType<Shutdown>();
 
                 // Create a new instance of it
                 Shutdown shutdownInstance = (Shutdown)Activator.CreateInstance(shutdownType);
@@ -128,11 +128,6 @@ namespace BcatBotFramework.Core
         private void Shutdown()
         {
 
-        }
-
-        private static Type GetSubclassOfType<T>()
-        {
-            return Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(T))).FirstOrDefault();
         }
 
     }
