@@ -73,6 +73,8 @@ namespace BcatBotFramework.Core
                 // Wait a little while
                 await Task.Delay(1000 * ShutdownWaitTime);
             }
+
+            Console.WriteLine("Shutdown complete");
         }
 
         protected abstract void ShutdownAppSpecificItems();
