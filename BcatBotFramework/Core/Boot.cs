@@ -111,7 +111,6 @@ namespace BcatBotFramework.Core
             // Register the SIGTERM handler
             AssemblyLoadContext.Default.Unloading += async x =>
             {
-                Console.WriteLine("Unloading");
                 // Get the Shutdown subclass
                 Type shutdownType = GetSubclassOfType<Shutdown>();
 
