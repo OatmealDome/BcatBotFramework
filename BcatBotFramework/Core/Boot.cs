@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using BcatBotFramework.Core.Config;
 using BcatBotFramework.Difference;
@@ -106,8 +107,27 @@ namespace BcatBotFramework.Core
 
             // Schedule the BootHousekeepingJob
             await QuartzScheduler.ScheduleJob(GetSubclassOfType<BootHousekeepingJob>(), "Immediate");
+
+            // Register the SIGTERM handler
+            AssemblyLoadContext.Default.Unloading += async x =>
+            {
+                Console.WriteLine("Unloading");
+                // Get the Shutdown subclass
+                Type shutdownType = GetSubclassOfType<Shutdown>();
+
+                // Create a new instance of it
+                Shutdown shutdownInstance = (Shutdown)Activator.CreateInstance(shutdownType);
+                
+                // Call the Run method
+                await shutdownInstance.Run();
+            };
             
             await Task.Delay(-1);
+
+        }
+
+        private void Shutdown()
+        {
 
         }
 

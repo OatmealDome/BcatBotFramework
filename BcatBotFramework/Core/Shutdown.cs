@@ -10,19 +10,22 @@ using BcatBotFramework.Difference;
 using BcatBotFramework.Scheduler;
 using BcatBotFramework.Social.Twitter;
 
-namespace BcatBotFramework.Scheduler.Job
+namespace BcatBotFramework.Core
 {
-    public abstract class ShutdownJob : IJob
+    public abstract class Shutdown
     {
         private static int ShutdownWaitTime = 5; // in seconds
 
-        public async Task Execute(IJobExecutionContext context)
+        public async Task Run(bool fastShutdown = false)
         {
-            // Shutdown the Scheduler
-            await QuartzScheduler.Dispose();
+            if (!fastShutdown)
+            {
+                // Shutdown the Scheduler
+                await QuartzScheduler.Dispose();
 
-            // Shutdown the DiscordBot
-            await DiscordBot.Dispose();
+                // Shutdown the DiscordBot
+                await DiscordBot.Dispose();
+            }
 
             // Shutdown Twitter
             TwitterManager.Dispose();
@@ -45,10 +48,11 @@ namespace BcatBotFramework.Scheduler.Job
             // Save the configuration
             Configuration.LoadedConfiguration.Write();
 
-            // Wait a little while just in case
-            await Task.Delay(1000 * ShutdownWaitTime);
-
-            Environment.Exit(0);
+            if (!fastShutdown)
+            {
+                // Wait a little while
+                await Task.Delay(1000 * ShutdownWaitTime);
+            }
         }
 
         protected abstract void ShutdownAppSpecificItems();
