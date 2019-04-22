@@ -9,6 +9,7 @@ using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Difference;
 using BcatBotFramework.Scheduler;
 using BcatBotFramework.Social.Twitter;
+using System.IO;
 
 namespace BcatBotFramework.Core
 {
@@ -39,6 +40,11 @@ namespace BcatBotFramework.Core
 
                 // Shutdown the DiscordBot
                 await DiscordBot.Dispose();
+            }
+            else
+            {
+                // Create a backup of the current config.json just in case
+                File.Copy(Boot.LOCAL_CONFIGURATION, Boot.LOCAL_CONFIGURATION_AUTOMATIC_BACKUP, true);
             }
 
             // Shutdown Twitter

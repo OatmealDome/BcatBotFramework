@@ -23,6 +23,7 @@ namespace BcatBotFramework.Core
         // Local Directory
         private static string LOCAL_DIRECTORY = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static string LOCAL_CONFIGURATION = Path.Combine(LOCAL_DIRECTORY, "config.json");
+        public static string LOCAL_CONFIGURATION_AUTOMATIC_BACKUP = Path.Combine(LOCAL_DIRECTORY, "config-automatic-backup.json");
         public static string LOCAL_EXCEPTION_LOGS_DIRECTORY = Path.Combine(LOCAL_DIRECTORY, "ExceptionLogs");
         
         static async Task Main(string[] args)
@@ -95,7 +96,7 @@ namespace BcatBotFramework.Core
             {
                 await Task.Delay(1000);
             }
-            
+
             // Print out to the logging channel that we're initialized
             await DiscordBot.LoggingChannel.SendMessageAsync("\\*\\*\\* **Initialized**");
 
