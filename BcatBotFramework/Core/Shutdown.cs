@@ -15,10 +15,16 @@ namespace BcatBotFramework.Core
 {
     public abstract class Shutdown
     {
+        private static bool IsShutdown = false;
         private static int ShutdownWaitTime = 5; // in seconds
 
         public static async Task CreateAndRun(bool fastShutdown)
         {
+            if (IsShutdown)
+            {
+                return;
+            }
+
             // Get the Shutdown subclass
             Type shutdownType = TypeUtils.GetSubclassOfType<Shutdown>();
 
@@ -27,6 +33,8 @@ namespace BcatBotFramework.Core
             
             // Call the Run method
             await shutdownInstance.Run(fastShutdown);
+
+            IsShutdown = true;
         }
 
         private async Task Run(bool fastShutdown)
