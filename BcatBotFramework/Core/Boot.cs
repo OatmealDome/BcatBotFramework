@@ -111,22 +111,11 @@ namespace BcatBotFramework.Core
             // Register the SIGTERM handler
             AssemblyLoadContext.Default.Unloading += async x =>
             {
-                // Get the Shutdown subclass
-                Type shutdownType = TypeUtils.GetSubclassOfType<Shutdown>();
-
-                // Create a new instance of it
-                Shutdown shutdownInstance = (Shutdown)Activator.CreateInstance(shutdownType);
-                
-                // Call the Run method
-                await shutdownInstance.Run();
+                // Run Shutdown in fast mode
+                await Shutdown.CreateAndRun(true);
             };
             
             await Task.Delay(-1);
-
-        }
-
-        private void Shutdown()
-        {
 
         }
 

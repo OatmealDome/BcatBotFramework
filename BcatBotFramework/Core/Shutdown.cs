@@ -16,8 +16,22 @@ namespace BcatBotFramework.Core
     {
         private static int ShutdownWaitTime = 5; // in seconds
 
-        public async Task Run(bool fastShutdown = false)
+        public static async Task CreateAndRun(bool fastShutdown)
         {
+            // Get the Shutdown subclass
+            Type shutdownType = TypeUtils.GetSubclassOfType<Shutdown>();
+
+            // Create a new instance of it
+            Shutdown shutdownInstance = (Shutdown)Activator.CreateInstance(shutdownType);
+            
+            // Call the Run method
+            await shutdownInstance.Run(fastShutdown);
+        }
+
+        private async Task Run(bool fastShutdown)
+        {
+            Console.WriteLine($"{(fastShutdown ? "Fast" : "Slow")} shutdown started");
+
             if (!fastShutdown)
             {
                 // Shutdown the Scheduler
