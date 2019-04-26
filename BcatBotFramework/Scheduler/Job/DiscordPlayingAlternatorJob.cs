@@ -35,13 +35,13 @@ namespace BcatBotFramework.Scheduler.Job
                         users += guild.MemberCount;
                     }
 
-                    text = $"with {users.ToString("N", CultureInfo.InvariantCulture)} users | {commandPrefix}help";
+                    text = $"with {users.ToString("N0", CultureInfo.InvariantCulture)} users | {commandPrefix}help";
                     break;
                 case PlayingState.Help:
                     text = $"command list | {commandPrefix}help";
                     break;
                 case PlayingState.ServerCount:
-                    text = $"in {DiscordBot.GetGuilds().Count.ToString("N", CultureInfo.InvariantCulture)} servers | {commandPrefix}help";
+                    text = $"in {DiscordBot.GetGuilds().Count.ToString("N0", CultureInfo.InvariantCulture)} servers | {commandPrefix}help";
                     break;
                 case PlayingState.Invite:
                     text = $"invite me | {commandPrefix}invite";
