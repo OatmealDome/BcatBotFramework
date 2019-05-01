@@ -5,7 +5,7 @@ using BcatBotFramework.Json;
 using Newtonsoft.Json;
 using Renci.SshNet;
 
-namespace SmashBcatDetector.Core
+namespace BcatBotFramework.Core
 {
     public static class WebFileHandler
     {
