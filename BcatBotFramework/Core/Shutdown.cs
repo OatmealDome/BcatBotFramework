@@ -70,6 +70,9 @@ namespace BcatBotFramework.Core
             // Shutdown the HandlerMapper
             HandlerMapper.Dispose();
 
+            // Shutdown the KeysetManager
+            KeysetManager.Dispose();
+
             // Shutdown anything app-specific
             ShutdownAppSpecificItems();
 
