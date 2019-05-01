@@ -104,6 +104,25 @@ namespace BcatBotFramework.Internationalization
             return valueDict;
         }
 
+        public static Dictionary<Language, string> LocalizeToAllLanguagesWithFormat(string key, Dictionary<Language, object[]> param)
+        {
+            return LocalizeToAllLanguagesWithFormat(key, LanguageExtensions.GetAllLanguages(), param);
+        }
+
+        public static Dictionary<Language, string> LocalizeToAllLanguagesWithFormat(string key, IEnumerable<Language> languages, Dictionary<Language, object[]> param)
+        {
+            // Localize the key
+            Dictionary<Language, string> valueDict = LocalizeToAllLanguages(key, languages);
+
+            // Format the values
+            foreach (KeyValuePair<Language, string> pair in valueDict.ToList())
+            {
+                valueDict[pair.Key] = string.Format(pair.Value, param[pair.Key]);
+            }
+
+            return valueDict;
+        }
+
         public static Dictionary<Language, string> CreateDummyLocalizedValues(string value)
         {
             // Create a new Dictionary
