@@ -1,5 +1,5 @@
 using BcatBotFramework.Core.Config;
-using SmashBcatDetector.Core.Config.Web;
+using BcatBotFramework.Core.Config.Web;
 
 namespace BcatBotFramework.Core.Config
 {
