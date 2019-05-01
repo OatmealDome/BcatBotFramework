@@ -93,6 +93,18 @@ namespace BcatBotFramework.Internationalization.Discord
             return this;
         }
 
+        public LocalizedEmbedBuilder WithColor(Color color)
+        {
+            // Set the color on each EmbedBuilder
+            foreach (KeyValuePair<Language, EmbedBuilder> pair in embedBuilders)
+            {
+                pair.Value.WithColor(color);
+            }
+
+            // Return ourselves
+            return this;
+        }
+
         public Dictionary<Language, Embed> Build()
         {
             // Create a new Dictionary
