@@ -4,7 +4,6 @@ using BcatBotFramework.Core.Config;
 using BcatBotFramework.Json;
 using Newtonsoft.Json;
 using Renci.SshNet;
-using SmashBcatDetector.Core.Config;
 
 namespace SmashBcatDetector.Core
 {
