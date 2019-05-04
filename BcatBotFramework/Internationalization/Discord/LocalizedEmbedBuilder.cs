@@ -24,7 +24,7 @@ namespace BcatBotFramework.Internationalization.Discord
         public LocalizedEmbedBuilder WithTitle(string title)
         {
             // Create a dummy value Dictionary and call the overload
-            return WithTitle(Localizer.CreateDummyLocalizedValues(title));
+            return WithTitle(Localizer.LocalizeToAllLanguages(title, embedBuilders.Keys));
         }
 
         public LocalizedEmbedBuilder WithTitle(Dictionary<Language, string> localizedTitles)
