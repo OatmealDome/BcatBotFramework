@@ -94,17 +94,23 @@ namespace BcatBotFramework.Core
             // Deserialize the object
             return FromJson<T>(json);
         }
+        
 
         public static void WriteAllText(string path, object obj)
         {
             // Serialize the object
             string json = ToJson(obj);
 
+            WriteAllText(path, json);
+        }
+
+        public static void WriteAllText(string path, string str)
+        {
             // Check if a remote connection isn't open
             if (SftpClient == null)
             {
                 // Write the file to the local path
-                File.WriteAllText(path, json);
+                File.WriteAllText(path, str);
             }
             else
             {
@@ -112,7 +118,7 @@ namespace BcatBotFramework.Core
                 SftpClient.DeleteFile(path);
 
                 // Write to the server
-                SftpClient.WriteAllText(path, json);
+                SftpClient.WriteAllText(path, str);
             }
         }
 
