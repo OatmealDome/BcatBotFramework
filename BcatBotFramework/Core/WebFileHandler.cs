@@ -96,7 +96,7 @@ namespace BcatBotFramework.Core
         }
         
 
-        public static void WriteAllText(string path, object obj)
+        public static void WriteSerializedJson(string path, object obj)
         {
             // Serialize the object
             string json = ToJson(obj);
