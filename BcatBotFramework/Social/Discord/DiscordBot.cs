@@ -314,7 +314,10 @@ namespace BcatBotFramework.Social.Discord
 
         public static async Task SendNotificationAsync(string message = null, Dictionary<Language, Embed> localizedEmbeds = null)
         {
-            foreach (GuildSettings guildSettings in Configuration.LoadedConfiguration.DiscordConfig.GuildSettings)
+            // Make a copy of the list just in case it is modified while notifications are sent
+            List<GuildSettings> guildList = new List<GuildSettings>(Configuration.LoadedConfiguration.DiscordConfig.GuildSettings);
+
+            foreach (GuildSettings guildSettings in guildList)
             {
                 // Get the guild
                 SocketGuild socketGuild = DiscordBot.GetGuild(guildSettings.GuildId);
