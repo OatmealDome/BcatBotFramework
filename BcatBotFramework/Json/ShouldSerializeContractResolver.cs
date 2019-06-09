@@ -12,7 +12,7 @@ namespace BcatBotFramework.Json
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);        
-            if (member.GetCustomAttribute<NoSerializeAttribute>() == null)
+            if (member.GetCustomAttribute<NoSerializeAttribute>() != null)
             {
                 property.Ignored = true;
             }
