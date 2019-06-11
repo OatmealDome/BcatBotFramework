@@ -60,13 +60,13 @@ namespace BcatBotFramework.Social.Twitter
             ExceptionHandler.SwallowWebExceptions = false;
         }
 
-        public void Tweet(string header, string text, string url, byte[] image = null)
+        public ITweet Tweet(string header, string text, string url, byte[] image = null)
         {
             // Check if Twitter is currently activated
             if (!Configuration.LoadedConfiguration.TwitterConfig.IsActivated)
             {
                 // Do nothing
-                return;
+                return null;
             }
             
 #if DEBUG
@@ -122,7 +122,7 @@ namespace BcatBotFramework.Social.Twitter
             }
 
             // Publish the tweet
-            Auth.ExecuteOperationWithCredentials<ITweet>(TwitterCredentials, () =>
+            ITweet tweet = Auth.ExecuteOperationWithCredentials<ITweet>(TwitterCredentials, () =>
             {
                 // Create a list of IMedia
                 List<IMedia> medias = new List<IMedia>();
@@ -147,6 +147,8 @@ namespace BcatBotFramework.Social.Twitter
             {
                 throw e;
             }
+
+            return tweet;
         }
 
         private static int ExecuteCharacterCounter(string targetString)
