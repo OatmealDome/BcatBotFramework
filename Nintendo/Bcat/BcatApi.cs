@@ -9,6 +9,7 @@ using Nintendo.Bcat.News.Catalog;
 using MessagePack;
 using BcatBotFramework.Core.Config;
 using BcatBotFramework.Core;
+using BcatBotFramework.Core.Config.NintendoCdn;
 
 namespace Nintendo.Bcat
 {
@@ -27,7 +28,7 @@ namespace Nintendo.Bcat
         private static string BCAT_QLAUNCH_TITLE_ID = "0100000000001000";
         private static string BCAT_QLAUNCH_PASSPHRASE = "acda358b4d32d17fd4037c1b5e0235427a8563f93b0fdb42a4a536ee95bbf80f";
 
-        private static string BCAT_USER_AGENT = "libcurl (nnBcat; 789f928b-138e-4b2f-afeb-1acae8c21d897; SDK 8.2.99.0)";
+        private static string BCAT_USER_AGENT_FORMAT = "libcurl (nnBcat; 789f928b-138e-4b2f-afeb-1acae8c21d897; SDK {0}.{1}.{2}.{3})";
         
         // Generated on initialization
         private static HttpClient httpClient;
@@ -40,9 +41,12 @@ namespace Nintendo.Bcat
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
             httpClient = new HttpClient(httpClientHandler);
 
-            // Add BCAT user agent
-            httpClient.DefaultRequestHeaders.Add("User-Agent", BCAT_USER_AGENT);
+            // Get the BCAT SDK version
+            SdkVersion version = Configuration.LoadedConfiguration.CdnConfig.BcatSdkVersion;
 
+            // Add BCAT user agent
+            httpClient.DefaultRequestHeaders.Add("User-Agent", string.Format(BCAT_USER_AGENT_FORMAT, version.Major, version.Minor, version.Revision, version.Build));
+            
             // Add serial
             httpClient.DefaultRequestHeaders.Add("X-Nintendo-Serial-Number", Configuration.LoadedConfiguration.CdnConfig.SerialNumber);
 
