@@ -28,7 +28,7 @@ namespace Nintendo.Bcat
         private static string BCAT_QLAUNCH_TITLE_ID = "0100000000001000";
         private static string BCAT_QLAUNCH_PASSPHRASE = "acda358b4d32d17fd4037c1b5e0235427a8563f93b0fdb42a4a536ee95bbf80f";
 
-        private static string BCAT_USER_AGENT_FORMAT = "libcurl (nnBcat; 789f928b-138e-4b2f-afeb-1acae8c21d897; SDK {0}.{1}.{2}.{3})";
+        private static string BCAT_USER_AGENT_FORMAT = "libcurl ({0}; 789f928b-138e-4b2f-afeb-1acae8c21d897; SDK {1}.{2}.{3}.{4})";
         
         // Generated on initialization
         private static HttpClient httpClient;
@@ -41,12 +41,6 @@ namespace Nintendo.Bcat
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
             httpClient = new HttpClient(httpClientHandler);
 
-            // Get the BCAT SDK version
-            SdkVersion version = Configuration.LoadedConfiguration.CdnConfig.BcatSdkVersion;
-
-            // Add BCAT user agent
-            httpClient.DefaultRequestHeaders.Add("User-Agent", string.Format(BCAT_USER_AGENT_FORMAT, version.Major, version.Minor, version.Revision, version.Build));
-            
             // Add serial
             httpClient.DefaultRequestHeaders.Add("X-Nintendo-Serial-Number", Configuration.LoadedConfiguration.CdnConfig.SerialNumber);
 
@@ -166,12 +160,12 @@ namespace Nintendo.Bcat
 
         public static async Task<byte[]> DownloadContainerAndDecrypt(string url, string titleId, string passphrase)
         {
-            Container container = new Container(await DownloadFile(url));
+            Container container = new Container(await DownloadFile(url, titleId == BCAT_QLAUNCH_TITLE_ID));
             
             return container.GetDecryptedData(titleId, passphrase);
         }
 
-        private static async Task<byte[]> DownloadFile(string url)
+        private static async Task<byte[]> DownloadFile(string url, bool isNews)
         {
             // Check if initialized
             if (!initialized)
@@ -189,10 +183,14 @@ namespace Nintendo.Bcat
             {
                 try 
                 {
+                    // Get the BCAT SDK version
+                    SdkVersion version = Configuration.LoadedConfiguration.CdnConfig.BcatSdkVersion;
+
                     // Create the request message
                     HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, url);
+                    message.Headers.Add("User-Agent", string.Format(BCAT_USER_AGENT_FORMAT, isNews ? "nnNews" : "nnBcat", version.Major, version.Minor, version.Revision, version.Build));
                     message.Headers.Add("X-Nintendo-DenebEdgeToken", await EdgeTokenManager.GetEdgeToken(EdgeTokenManager.QLAUNCH_CLIENT_ID));
-
+                    
                     // Send the request
                     using (HttpResponseMessage response = await httpClient.SendAsync(message))
                     using (HttpContent content = response.Content)
