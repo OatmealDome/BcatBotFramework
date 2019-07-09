@@ -53,6 +53,13 @@ namespace BcatBotFramework.Core.Config
             set;
         }
 
+        [JsonProperty("DigitalOcean")]
+        public DoConfig DoConfig
+        {
+            get;
+            set;
+        }
+
         [JsonProperty("Localizer")]
         public LocalizerConfig LocalizerConfig
         {
@@ -100,6 +107,8 @@ namespace BcatBotFramework.Core.Config
             TwitterConfig = new TwitterConfig();
             TwitterConfig.SetDefaults();
             JobSchedules = new Dictionary<string, JobSchedule>();
+            DoConfig = new DoConfig();
+            DoConfig.SetDefaults();
             S3Config = new S3Config();
             S3Config.SetDefaults();
             LocalizerConfig = new LocalizerConfig();
