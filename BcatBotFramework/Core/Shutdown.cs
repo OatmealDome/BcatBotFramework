@@ -10,6 +10,7 @@ using BcatBotFramework.Difference;
 using BcatBotFramework.Scheduler;
 using BcatBotFramework.Social.Twitter;
 using System.IO;
+using DigitalOcean;
 
 namespace BcatBotFramework.Core
 {
@@ -57,6 +58,9 @@ namespace BcatBotFramework.Core
 
             // Shutdown Twitter
             TwitterManager.Dispose();
+
+            // Shutdown DigitalOcean
+            DoApi.Dispose();
 
             // Shutdown S3
             S3Api.Dispose();

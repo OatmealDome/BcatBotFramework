@@ -12,6 +12,7 @@ using BcatBotFramework.Scheduler;
 using BcatBotFramework.Scheduler.Job;
 using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Social.Twitter;
+using DigitalOcean;
 using Nintendo.Bcat;
 using Nintendo.DAuth;
 using S3;
@@ -84,6 +85,9 @@ namespace BcatBotFramework.Core
 
             // Initialize S3
             S3Api.Initialize();
+
+            // Initialize DigitalOcean
+            DoApi.Initialize();
 
             // Initialize Twitter
             TwitterManager.Initialize();
