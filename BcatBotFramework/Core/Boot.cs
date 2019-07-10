@@ -53,9 +53,10 @@ namespace BcatBotFramework.Core
             {
                 // Create a new dummy Configuration
                 configuration = (Configuration)Activator.CreateInstance(TypeUtils.GetSubclassOfType<Configuration>());
-
+                configuration.SetDefaults();
+                
                 // Write out the default config
-                configuration.Write();
+                configuration.Write(LOCAL_CONFIGURATION);
 
                 Console.WriteLine("Wrote default configuration to " + LOCAL_CONFIGURATION);
 

@@ -96,6 +96,11 @@ namespace BcatBotFramework.Core.Config
             File.WriteAllText(ConfigurationFilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
 
+        public void Write(string path)
+        {
+            File.WriteAllText(path, JsonConvert.SerializeObject(this, Formatting.Indented));
+        }
+
         public void SetDefaults()
         {
             CdnConfig = new NintendoCdnConfig();
