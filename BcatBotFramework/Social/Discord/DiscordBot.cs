@@ -267,7 +267,14 @@ namespace BcatBotFramework.Social.Discord
 
                 foreach (InteractiveMessage interactiveMessage in messages)
                 {
-                    await interactiveMessage.TextMessageReceived(socketMessage);
+                    try
+                    {
+                        await interactiveMessage.TextMessageReceived(socketMessage);
+                    }
+                    catch (Exception e)
+                    {
+                        await DiscordUtil.SendErrorMessageByException(commandContext.Guild, commandContext.Channel, commandContext.User, $"in {interactiveMessage.GetType().Name}.TextMessageReceived()", e);
+                    }
                 }
             }
         }
@@ -293,7 +300,14 @@ namespace BcatBotFramework.Social.Discord
             // TODO a better way?
             foreach (InteractiveMessage interactiveMessage in messages)
             {
-                await interactiveMessage.ReactionAdded(reaction);
+                try
+                {
+                    await interactiveMessage.ReactionAdded(reaction);
+                }
+                catch (Exception e)
+                {
+                    await DiscordUtil.SendErrorMessageByException(null, messageChannel, reaction.User.Value, $"in {interactiveMessage.GetType().Name}.ReactionAdded()", e);
+                }
             }
         }
 
