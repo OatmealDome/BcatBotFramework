@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Nintendo.Bcat;
 using BcatBotFramework.Core.Config.Discord;
+using BcatBotFramework.Social.Discord.Notifications;
 
 namespace BcatBotFramework.Core.Config
 {
@@ -38,6 +39,12 @@ namespace BcatBotFramework.Core.Config
         }
 
         public List<GuildSettings> GuildSettings
+        {
+            get;
+            set;
+        }
+
+        public List<NotificationsSettings> NotificationsSettings
         {
             get;
             set;
@@ -89,6 +96,8 @@ namespace BcatBotFramework.Core.Config
                 TargetChannelId = 194559160572968961, // #general
                 DefaultLanguage = Language.EnglishUS
             };
+            GuildSettings = new List<GuildSettings>();
+            NotificationsSettings = new List<NotificationsSettings>();
             CommandPrefix = "test.";
             AlternatorRate = 10;
             MessageCacheSize = 10;
