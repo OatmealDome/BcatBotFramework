@@ -13,6 +13,7 @@ using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Internationalization;
 using System.Reflection;
+using BcatBotFramework.Social.Discord.Notifications;
 
 namespace BcatBotFramework.Social.Discord
 {
@@ -76,13 +77,13 @@ namespace BcatBotFramework.Social.Discord
                 if (guild != null)
                 {
                     // Attempt to get the GuildSettings for this guild
-                    GuildSettings guildSettings = Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(x => x.GuildId == guild.Id).FirstOrDefault();
+                    NotificationsSettings notificationsSettings = Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.Where(x => x.GuildId == guild.Id).FirstOrDefault();
 
                     // Check if there is a GuildSettings
-                    if (guildSettings != null)
+                    if (notificationsSettings != null)
                     {
                         // Set the target language
-                        return guildSettings.DefaultLanguage;
+                        return notificationsSettings.GetSetting("language");
                     }
                 }
 
@@ -119,7 +120,7 @@ namespace BcatBotFramework.Social.Discord
         public static async Task ProcessLeftGuild(ulong id, string name = null)
         {
             // Remove any GuildSettings for this guild
-            Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.RemoveAll((guildSettings) =>
+            Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.RemoveAll((guildSettings) =>
             {
                 return guildSettings.GuildId == id;
             });
@@ -139,13 +140,13 @@ namespace BcatBotFramework.Social.Discord
         public static async Task FindBadGuilds(bool ignoreExcessiveAmount = false)
         {
             // Find every guild that registered a channel we can't write to
-            List<GuildSettings> badGuilds = Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(guildSettings =>
+            List<NotificationsSettings> badGuilds = Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.Where(guildSettings =>
             {
                 // Get the SocketGuild
                 SocketGuild socketGuild = DiscordBot.GetGuild(guildSettings.GuildId);
 
                 // Get the channel
-                SocketGuildChannel channel = socketGuild.GetChannel(guildSettings.TargetChannelId);
+                SocketGuildChannel channel = socketGuild.GetChannel(guildSettings.ChannelId);
 
                 // Check if the channel no longer exists
                 if (channel == null)
@@ -168,17 +169,17 @@ namespace BcatBotFramework.Social.Discord
                 return;
             }
             
-            foreach (GuildSettings guildSettings in badGuilds)
+            foreach (NotificationsSettings guildSettings in badGuilds)
             {
                 // Deregister the guild
                 await DeregisterGuild(guildSettings);
             }
         }
 
-        public static async Task DeregisterGuild(GuildSettings guildSettings)
+        public static async Task DeregisterGuild(NotificationsSettings guildSettings)
         {
             // Remove the GuildSettings
-            Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Remove(guildSettings);
+            Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.Remove(guildSettings);
 
             // Get the guild
             SocketGuild socketGuild = DiscordBot.GetGuild(guildSettings.GuildId);
@@ -186,7 +187,7 @@ namespace BcatBotFramework.Social.Discord
             // Send a message to this server that their guild has been deregistered
             Embed embed = new EmbedBuilder()
                 .WithTitle("Warning")
-                .WithDescription(Localizer.Localize("discord.guild.deregister", guildSettings.DefaultLanguage))
+                .WithDescription(Localizer.Localize("discord.guild.deregister", guildSettings.GetSetting("language")))
                 .WithColor(Color.Orange)
                 .Build();
             
