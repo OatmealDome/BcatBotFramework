@@ -348,6 +348,11 @@ namespace BcatBotFramework.Social.Discord
             return GetGuild(guildId).GetTextChannel(channelId);
         }
 
+        public static SocketChannel GetChannel(ulong channelId)
+        {
+            return DiscordClient.GetChannel(channelId);
+        }
+
         public static async Task SendNotificationAsync(Predicate<NotificationsSettings> shouldPost, string message = null, Dictionary<Language, Embed> localizedEmbeds = null)
         {
             // Make a copy of the list just in case it is modified while notifications are sent
