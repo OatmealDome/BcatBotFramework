@@ -136,9 +136,9 @@ namespace BcatBotFramework.Social.Discord
 
         public abstract MessageProperties CreateMessageProperties();
 
-        public abstract bool HandleReaction(IEmote emote);
+        public abstract Task<bool> HandleReaction(IEmote emote);
 
-        public abstract bool HandleTextMessage(SocketMessage message);
+        public abstract Task<bool> HandleTextMessage(SocketMessage message);
 
         public abstract Task AddReactions(SocketReaction reaction);
 
