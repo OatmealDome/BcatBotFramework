@@ -19,10 +19,16 @@ namespace BcatBotFramework.Social.Discord
             set;
         }
 
-        protected IUser User
+        public IUser User
         {
             get;
-            set;
+            private set;
+        }
+
+        public ISocketMessageChannel Channel
+        {
+            get;
+            private set;
         }
 
         public ulong MessageId
@@ -52,6 +58,9 @@ namespace BcatBotFramework.Social.Discord
             // Send the message
             TargetMessage = await targetChannel.SendMessageAsync(text: properties.Content.GetValueOrDefault(), embed: properties.Embed.GetValueOrDefault());
 
+            // Set the channel
+            Channel = targetChannel;
+
             // Add the reactions
             await AddReactions(null);
         }
@@ -62,7 +71,7 @@ namespace BcatBotFramework.Social.Discord
             await Semaphore.WaitAsync();
 
             // Handle the reaction if needed and if it's from the executor
-            if (reaction.UserId != User.Id || !HandleReaction(reaction.Emote))
+            if (reaction.UserId != User.Id || !await HandleReaction(reaction.Emote))
             {
                 // Release the semaphore
                 Semaphore.Release();
@@ -87,6 +96,34 @@ namespace BcatBotFramework.Social.Discord
             Semaphore.Release();
         }
 
+        public async Task TextMessageReceived(SocketMessage message)
+        {
+            // Acquire the semaphore
+            await Semaphore.WaitAsync();
+
+            // Handle the message if needed and if it's from the executor
+            if (!await HandleTextMessage(message))
+            {
+                // Release the semaphore
+                Semaphore.Release();
+
+                return;
+            }
+
+            // Create the initial message
+            MessageProperties newProperties = CreateMessageProperties();
+
+            // Modify the message
+            await TargetMessage.ModifyAsync(properties =>
+            {
+                properties.Content = newProperties.Content;
+                properties.Embed = newProperties.Embed;
+            });
+
+            // Release the semaphore
+            Semaphore.Release();
+        }
+
         public async Task ClearReactions()
         {
             await TargetMessage.RemoveAllReactionsAsync();
@@ -100,6 +137,8 @@ namespace BcatBotFramework.Social.Discord
         public abstract MessageProperties CreateMessageProperties();
 
         public abstract bool HandleReaction(IEmote emote);
+
+        public abstract bool HandleTextMessage(SocketMessage message);
 
         public abstract Task AddReactions(SocketReaction reaction);
 
