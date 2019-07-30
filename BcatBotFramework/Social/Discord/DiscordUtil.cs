@@ -68,6 +68,71 @@ namespace BcatBotFramework.Social.Discord
             await DiscordBot.LoggingChannel.SendMessageAsync("**[Exception]** " + pingList, embed: embedBuilder.Build());
         }
 
+        public static async Task SendErrorMessageByException(IGuild guild, ISocketMessageChannel channel, IUser user, string source, Exception exception)
+        {
+            // Try to get the Exception as a LocalizedException
+            LocalizedException localizedException = exception as LocalizedException;
+
+            // Check if this really is a LocalizedException
+            if (localizedException != null)
+            {
+                // Send the error message
+                await SendErrorMessageByLocalizedDescription(guild, channel, localizedException.Message);
+            }
+            else
+            {
+                // Notify the logging channel
+                await DiscordUtil.HandleException(exception, source, guild, channel, user);
+                
+                // Send the error message
+                await SendErrorMessageByTypeAndMessage(guild, channel, exception.GetType().Name, exception.Message, true);
+            }
+        }
+
+        public static async Task SendErrorMessageByTypeAndMessage(IGuild guild, ISocketMessageChannel channel, string type, string message, bool isException = false)
+        {
+            // Get the language for this Guild
+            Language language = DiscordUtil.GetDefaultLanguage(guild);
+
+            // Start building an Embed
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                .WithTitle(Localizer.Localize("discord.error", language))
+                .WithColor(Color.Red)
+                .WithDescription(Localizer.Localize($"discord.error.{(isException ? "exception" : "unknown")}", language))
+                .AddField(Localizer.Localize("discord.error.type", language), type)
+                .AddField(Localizer.Localize("discord.error.message", language), message);
+
+            await channel.SendMessageAsync(embed: embedBuilder.Build());
+        }
+
+        public static async Task SendErrorMessageByLocalizedDescription(IGuild guild, ISocketMessageChannel channel, string localizable)
+        {
+            // Get the language for this Guild
+            Language language = DiscordUtil.GetDefaultLanguage(guild);
+
+            // Start building an Embed
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                .WithTitle(Localizer.Localize("discord.error", language))
+                .WithColor(Color.Red)
+                .WithDescription(Localizer.Localize(localizable, language));
+
+            await channel.SendMessageAsync(embed: embedBuilder.Build());
+        }
+
+        public static async Task SendErrorMessageByDescription(IGuild guild, ISocketMessageChannel channel, string description)
+        {
+            // Get the language for this Guild
+            Language language = DiscordUtil.GetDefaultLanguage(guild);
+
+            // Start building an Embed
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                .WithTitle(Localizer.Localize("discord.error", language))
+                .WithColor(Color.Red)
+                .WithDescription(description);
+
+            await channel.SendMessageAsync(embed: embedBuilder.Build());
+        }
+
         public static Language GetDefaultLanguage(IGuild guild, string specifiedLanguage = null)
         {
             // Check if a language was specified
