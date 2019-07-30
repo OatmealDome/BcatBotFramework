@@ -28,12 +28,12 @@ namespace BcatBotFramework.Social.Discord.Interactive
 
         }
 
-        public override bool HandleReaction(IEmote emote)
+        public override Task<bool> HandleReaction(IEmote emote)
         {
             if (emote.Name == EMOTE_TO_BEGINNING.Name)
             {
                 CurrentPage = 0;
-                return true;
+                return Task.FromResult(true);
             }
             else if (emote.Name == EMOTE_BACK.Name)
             {
@@ -45,7 +45,7 @@ namespace BcatBotFramework.Social.Discord.Interactive
                     CurrentPage = 0;
                 }
                 
-                return true;
+                return Task.FromResult(true);
             }
             else if (emote.Name == EMOTE_FORWARD.Name)
             {
@@ -57,15 +57,15 @@ namespace BcatBotFramework.Social.Discord.Interactive
                     CurrentPage = LastPage;
                 }
 
-                return true;
+                return Task.FromResult(true);
             }
             else if (emote.Name == EMOTE_TO_END.Name)
             {
                 CurrentPage = LastPage;
-                return true;
+                return Task.FromResult(true);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
 
         public override async Task AddReactions(SocketReaction reaction)
