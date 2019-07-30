@@ -173,24 +173,16 @@ namespace BcatBotFramework.Social.Discord
                 IResult result = await CommandService.ExecuteAsync(commandContext, commandPosition, null);
                 if (!result.IsSuccess)
                 {
-                    // Get the language for this Guild
-                    Language language = DiscordUtil.GetDefaultLanguage(commandContext.Guild);
-
-                    // Start building an Embed
-                    EmbedBuilder embedBuilder = new EmbedBuilder()
-                        .WithTitle(Localizer.Localize("discord.error", language))
-                        .WithColor(Color.Red);
-
                     switch (result.Error)
                     {
                         case CommandError.UnknownCommand:
-                            //embedBuilder.WithDescription(Localizer.Localize("discord.error.unknown_command", language));
+                            //await DiscordUtil.SendErrorMessageByLocalizedDescription(commandContext.Guild, commandContext.Channel, "discord.error.unknown_command");
                             //
                             //break;
 
                             return; // ignore
                         case CommandError.BadArgCount:
-                            embedBuilder.WithDescription(Localizer.Localize("discord.error.bad_arguments", language));
+                            await DiscordUtil.SendErrorMessageByLocalizedDescription(commandContext.Guild, commandContext.Channel, "discord.error.bad_arguments");
 
                             break;
                         case CommandError.UnmetPrecondition:
@@ -202,45 +194,32 @@ namespace BcatBotFramework.Social.Discord
                             if (result.ErrorReason.StartsWith("~loc"))
                             {
                                 // Localize the error reason
-                                description = Localizer.Localize(description.Split(',')[1], language);
+                                await DiscordUtil.SendErrorMessageByLocalizedDescription(commandContext.Guild, commandContext.Channel, description.Split(',')[1]);
                             }
-
-                            // Set the description
-                            embedBuilder.WithDescription(description);
+                            else
+                            {
+                                // Localize the error reason
+                                await DiscordUtil.SendErrorMessageByDescription(commandContext.Guild, commandContext.Channel, result.ErrorReason);
+                            }
 
                             break;
                         case CommandError.Exception:
                             // Get the IResult as an ExecuteResult
                             ExecuteResult executeResult = (ExecuteResult)result;
 
-                            // Try to get the Exception as a LocalizedException
-                            LocalizedException localizedException = executeResult.Exception as LocalizedException;
+                            // Send the error message
+                            await DiscordUtil.SendErrorMessageByException(commandContext.Guild, commandContext.Channel, commandContext.User, $"with command``{userMessage.Content}``", executeResult.Exception);
 
-                            // Check if this really is a LocalizedException
-                            if (localizedException != null)
-                            {
-                                embedBuilder.WithDescription(Localizer.Localize(localizedException.Message, language));
-                            }
-                            else
-                            {
-                                // Notify the logging channel
-                                await DiscordUtil.HandleException(executeResult.Exception, $"with command ``{userMessage.Content}``", commandContext.Guild, commandContext.Channel, commandContext.User);
-                                
-                                embedBuilder.WithDescription(Localizer.Localize("discord.error.exception", language));
-                                embedBuilder.AddField(Localizer.Localize("discord.error.type", language), executeResult.Exception.GetType().Name);
-                                embedBuilder.AddField(Localizer.Localize("discord.error.message", language), executeResult.Exception.Message);
-                            }
-                            
                             break;
                         default:
-                            embedBuilder.WithDescription(Localizer.Localize("discord.error.unknown", language));
-                            embedBuilder.AddField(Localizer.Localize("discord.error.type", language), result.Error);
-                            embedBuilder.AddField(Localizer.Localize("discord.error.message", language), result.ErrorReason);
-                            
+                            // Get the type
+                            string type = (result.Error != null) ? result.Error.Value.GetType().Name : "Unknown";
+
+                            // Send the error message
+                            await DiscordUtil.SendErrorMessageByTypeAndMessage(commandContext.Guild, commandContext.Channel, type, result.ErrorReason);
+
                             break;
                     }
-
-                    await commandContext.Channel.SendMessageAsync(embed: embedBuilder.Build());
                 }
                 else
                 {
