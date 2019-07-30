@@ -16,6 +16,7 @@ using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Scheduler;
 using BcatBotFramework.Scheduler.Job;
 using BcatBotFramework.Social.Discord.Notifications;
+using System.Threading;
 
 namespace BcatBotFramework.Social.Discord
 {
@@ -24,6 +25,8 @@ namespace BcatBotFramework.Social.Discord
         // Instances
         private static DiscordSocketClient DiscordClient = null;
         private static CommandService CommandService = null;
+        private static readonly SemaphoreSlim InteractiveMessageSemaphore = new SemaphoreSlim(1, 1);
+        private static uint InteractiveMessageJobCounter = 0;
 
         // Members
         public static bool IsReady
@@ -89,6 +92,9 @@ namespace BcatBotFramework.Social.Discord
             // Create the interactive messages list
             ActiveInteractiveMessages = new List<InteractiveMessage>();
 
+            // Set the counter
+            InteractiveMessageJobCounter = 0;
+
             // Log in
             await DiscordClient.LoginAsync(TokenType.Bot, Configuration.LoadedConfiguration.DiscordConfig.Token);
             await DiscordClient.StartAsync();
@@ -110,6 +116,7 @@ namespace BcatBotFramework.Social.Discord
             DiscordClient = null;
             IsReady = false;
             ActiveInteractiveMessages = null;
+            InteractiveMessageJobCounter = 0;
         }
 
         private static async Task ClientReady()
@@ -266,6 +273,24 @@ namespace BcatBotFramework.Social.Discord
                     }
                 }
             }
+            else
+            {
+                // Acquire the semaphore
+                await InteractiveMessageSemaphore.WaitAsync();
+
+                // Check if this will match an interactive message
+                // TODO a better way?
+                IEnumerable<InteractiveMessage> messages = ActiveInteractiveMessages.Where(x => x.Channel.Id == socketMessage.Channel.Id
+                            && x.User.Id == socketMessage.Author.Id).ToList();
+
+                // Release the semaphore
+                InteractiveMessageSemaphore.Release();
+
+                foreach (InteractiveMessage interactiveMessage in messages)
+                {
+                    await interactiveMessage.TextMessageReceived(socketMessage);
+                }
+            }
         }
 
         private static async Task ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel messageChannel, SocketReaction reaction)
@@ -276,8 +301,18 @@ namespace BcatBotFramework.Social.Discord
                 return;
             }
 
+            // Acquire the semaphore
+            await InteractiveMessageSemaphore.WaitAsync();
+
+            // Check if this will match an interactive message
             // TODO a better way?
-            foreach (InteractiveMessage interactiveMessage in ActiveInteractiveMessages.Where(x => x.MessageId == message.Id))
+            IEnumerable<InteractiveMessage> messages = ActiveInteractiveMessages.Where(x => x.MessageId == message.Id).ToList();
+
+            // Release the semaphore
+            InteractiveMessageSemaphore.Release();
+
+            // TODO a better way?
+            foreach (InteractiveMessage interactiveMessage in messages)
             {
                 await interactiveMessage.ReactionAdded(reaction);
             }
@@ -349,6 +384,9 @@ namespace BcatBotFramework.Social.Discord
 
         public static async Task SendInteractiveMessageAsync(ISocketMessageChannel channel, InteractiveMessage message)
         {
+            // Acquire the semaphore
+            await InteractiveMessageSemaphore.WaitAsync();
+
             // Send the initial message
             await message.SendInitialMessage(channel);
 
@@ -357,13 +395,34 @@ namespace BcatBotFramework.Social.Discord
 
             // Create a JobDataMap
             JobDataMap dataMap = new JobDataMap();
-            dataMap.Put("messageId", (object)message.MessageId);
+            dataMap.Put("messageInstance", message);
 
             // Create the timeout time
             DateTime timeoutTime = DateTime.Now.AddMinutes(Configuration.LoadedConfiguration.DiscordConfig.InteractiveMessageTimeout);
 
             // Schedule the cleanup job
-            await QuartzScheduler.ScheduleJob<InteractiveMessageCleanupJob>("Normal" + message.MessageId, timeoutTime, dataMap);
+            await QuartzScheduler.ScheduleJob<InteractiveMessageCleanupJob>("Normal" + ++InteractiveMessageJobCounter, timeoutTime, dataMap);
+
+            // Release the semaphore
+            InteractiveMessageSemaphore.Release();
+        }
+
+        public static async Task DeactivateInteractiveMessage(InteractiveMessage message)
+        {
+            // Acquire the semaphore
+            await InteractiveMessageSemaphore.WaitAsync();
+
+            // Add this to the active messages
+            bool isSuccess = ActiveInteractiveMessages.Remove(message);
+
+            // Clear all reactions if needed
+            if (isSuccess)
+            {
+                await message.ClearReactions();
+            }
+
+            // Release the semaphore
+            InteractiveMessageSemaphore.Release();
         }
 
         public static async Task SendMessageToFirstWritableChannel(SocketGuild socketGuild, string message = null, Embed embed = null)
