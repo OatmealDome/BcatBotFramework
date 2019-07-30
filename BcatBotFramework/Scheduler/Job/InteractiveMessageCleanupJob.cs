@@ -12,13 +12,10 @@ namespace BcatBotFramework.Scheduler.Job
         public async Task Execute(IJobExecutionContext context)
         {
             // Get the target message
-            InteractiveMessage targetMessage = DiscordBot.ActiveInteractiveMessages.Where(x => x.MessageId == (ulong)context.JobDetail.JobDataMap["messageId"]).FirstOrDefault();
+            InteractiveMessage targetMessage = (InteractiveMessage)context.JobDetail.JobDataMap["messageInstance"];
             
-            // Remove this from the active list
-            DiscordBot.ActiveInteractiveMessages.Remove(targetMessage);
-            
-            // Clear all reactions
-            await targetMessage.ClearReactions();
+            // Remove it
+            await DiscordBot.DeactivateInteractiveMessage(targetMessage);
         }
 
     }
