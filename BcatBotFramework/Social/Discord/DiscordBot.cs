@@ -410,6 +410,15 @@ namespace BcatBotFramework.Social.Discord
             // Acquire the semaphore
             await InteractiveMessageSemaphore.WaitAsync();
 
+            // Check if this message is inactive
+            if (!message.IsActive)
+            {
+                goto done;
+            }
+
+            // Set as inactive
+            message.IsActive = false;
+
             // Add this to the active messages
             bool isSuccess = ActiveInteractiveMessages.Remove(message);
 
@@ -419,6 +428,7 @@ namespace BcatBotFramework.Social.Discord
                 await message.ClearReactions();
             }
 
+done:
             // Release the semaphore
             InteractiveMessageSemaphore.Release();
         }

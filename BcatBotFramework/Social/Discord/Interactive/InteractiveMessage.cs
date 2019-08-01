@@ -39,6 +39,12 @@ namespace BcatBotFramework.Social.Discord
             }
         }
 
+        public bool IsActive
+        {
+            get;
+            set;
+        }
+
         protected InteractiveMessage(IUser user)
         {
             this.User = user;
@@ -63,6 +69,9 @@ namespace BcatBotFramework.Social.Discord
 
             // Add the reactions
             await AddReactions(null);
+
+            // Set this as active
+            IsActive = true;
         }
 
         public async Task ReactionAdded(SocketReaction reaction)
@@ -70,8 +79,8 @@ namespace BcatBotFramework.Social.Discord
             // Acquire the semaphore
             await Semaphore.WaitAsync();
 
-            // Handle the reaction if needed and if it's from the executor
-            if (reaction.UserId != User.Id || !await HandleReaction(reaction.Emote))
+            // Handle the reaction if needed and check if this message is active and if it's from the executor
+            if (!IsActive || reaction.UserId != User.Id || !await HandleReaction(reaction.Emote))
             {
                 // Release the semaphore
                 Semaphore.Release();
@@ -101,8 +110,8 @@ namespace BcatBotFramework.Social.Discord
             // Acquire the semaphore
             await Semaphore.WaitAsync();
 
-            // Handle the message if needed and if it's from the executor
-            if (!await HandleTextMessage(message))
+            // Handle the message if needed and check if this message is active and if it's from the executor
+            if (!IsActive || !await HandleTextMessage(message))
             {
                 // Release the semaphore
                 Semaphore.Release();
