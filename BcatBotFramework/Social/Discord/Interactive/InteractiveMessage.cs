@@ -88,15 +88,8 @@ namespace BcatBotFramework.Social.Discord
                 return;
             }
 
-            // Create the initial message
-            MessageProperties newProperties = CreateMessageProperties();
-
             // Modify the message
-            await TargetMessage.ModifyAsync(properties =>
-            {
-                properties.Content = newProperties.Content;
-                properties.Embed = newProperties.Embed;
-            });
+            await ModifyOriginalMessage();
 
             // Add and clear any reactions if needed
             await AddReactions(reaction);
@@ -119,18 +112,24 @@ namespace BcatBotFramework.Social.Discord
                 return;
             }
 
-            // Create the initial message
+            // Modify the message
+            await ModifyOriginalMessage();
+
+            // Release the semaphore
+            Semaphore.Release();
+        }
+
+        public async Task ModifyOriginalMessage()
+        {
+            // Create the new message properties
             MessageProperties newProperties = CreateMessageProperties();
 
-            // Modify the message
+            // Modify the target message
             await TargetMessage.ModifyAsync(properties =>
             {
                 properties.Content = newProperties.Content;
                 properties.Embed = newProperties.Embed;
             });
-
-            // Release the semaphore
-            Semaphore.Release();
         }
 
         public async Task ClearReactions()
