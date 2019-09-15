@@ -68,7 +68,7 @@ namespace BcatBotFramework.Social.Discord
             Channel = targetChannel;
 
             // Add the reactions
-            await AddReactions(null);
+            await AddReactions();
 
             // Set this as active
             IsActive = true;
@@ -91,8 +91,11 @@ namespace BcatBotFramework.Social.Discord
             // Modify the message
             await ModifyOriginalMessage();
 
+            // Clear the user's reaction on this message
+            await this.TargetMessage.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
+
             // Add and clear any reactions if needed
-            await AddReactions(reaction);
+            await AddReactions();
 
             // Release the semaphore
             Semaphore.Release();
@@ -148,7 +151,7 @@ namespace BcatBotFramework.Social.Discord
 
         public abstract Task<bool> HandleTextMessage(SocketMessage message);
 
-        public abstract Task AddReactions(SocketReaction reaction);
+        public abstract Task AddReactions();
 
     }
 }

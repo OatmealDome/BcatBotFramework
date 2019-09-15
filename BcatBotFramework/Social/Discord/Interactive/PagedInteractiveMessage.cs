@@ -68,7 +68,7 @@ namespace BcatBotFramework.Social.Discord.Interactive
             return Task.FromResult(false);
         }
 
-        public override async Task AddReactions(SocketReaction reaction)
+        public override async Task AddReactions()
         {
             if (CurrentPage == 0 && LastPage > 1)
             {
@@ -92,11 +92,6 @@ namespace BcatBotFramework.Social.Discord.Interactive
 
                 await this.TargetMessage.AddReactionAsync(EMOTE_TO_BEGINNING);
                 await this.TargetMessage.AddReactionAsync(EMOTE_BACK);
-            }
-            else
-            {
-                // Clear the user's reaction on this message
-                await this.TargetMessage.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
             }
         }
 
