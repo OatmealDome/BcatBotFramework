@@ -17,6 +17,7 @@ using BcatBotFramework.Scheduler;
 using BcatBotFramework.Scheduler.Job;
 using BcatBotFramework.Social.Discord.Notifications;
 using System.Threading;
+using BcatBotFramework.Social.Discord.Interactive;
 
 namespace BcatBotFramework.Social.Discord
 {
@@ -26,6 +27,7 @@ namespace BcatBotFramework.Social.Discord
         private static DiscordSocketClient DiscordClient = null;
         private static CommandService CommandService = null;
         private static readonly SemaphoreSlim InteractiveMessageSemaphore = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim InteractiveFlowSemaphore = new SemaphoreSlim(1, 1);
         private static uint InteractiveMessageJobCounter = 0;
 
         // Members
@@ -51,6 +53,12 @@ namespace BcatBotFramework.Social.Discord
         {
             get;
             set;
+        }
+
+        public static List<InteractiveFlow> ActiveInteractiveFlows
+        {
+            get;
+            private set;
         }
 
         public static async Task Initialize()
@@ -95,6 +103,9 @@ namespace BcatBotFramework.Social.Discord
             // Set the counter
             InteractiveMessageJobCounter = 0;
 
+            // Create the flows list
+            ActiveInteractiveFlows = new List<InteractiveFlow>();
+
             // Log in
             await DiscordClient.LoginAsync(TokenType.Bot, Configuration.LoadedConfiguration.DiscordConfig.Token);
             await DiscordClient.StartAsync();
@@ -116,6 +127,7 @@ namespace BcatBotFramework.Social.Discord
             DiscordClient = null;
             IsReady = false;
             ActiveInteractiveMessages = null;
+            ActiveInteractiveFlows = null;
             InteractiveMessageJobCounter = 0;
         }
 
@@ -431,6 +443,41 @@ namespace BcatBotFramework.Social.Discord
 done:
             // Release the semaphore
             InteractiveMessageSemaphore.Release();
+        }
+
+        public static async Task ActivateInteractiveFlow(InteractiveFlow interactiveFlow)
+        {
+            // Acquire the semaphore
+            await InteractiveFlowSemaphore.WaitAsync();
+
+            // Set the page to the root
+            await interactiveFlow.SetPage(0);
+
+            // Add this to the active messages
+            ActiveInteractiveFlows.Add(interactiveFlow);
+
+            // TODO: schedule cleanup job
+
+            // Release the semaphore
+            InteractiveFlowSemaphore.Release();
+        }
+
+        public static async Task DeactivateInteractiveFlow(InteractiveFlow interactiveFlow)
+        {
+            // Acquire the semaphore
+            await InteractiveFlowSemaphore.WaitAsync();
+
+            // Remove this from the active flows
+            bool isSuccess = ActiveInteractiveFlows.Remove(interactiveFlow);
+
+            // Deactivate the current interactive message if needed
+            if (isSuccess && interactiveFlow.CurrentInteractiveMessage != null && interactiveFlow.CurrentInteractiveMessage.IsActive)
+            {
+                await DeactivateInteractiveMessage(interactiveFlow.CurrentInteractiveMessage);
+            }
+            
+            // Release the semaphore
+            InteractiveFlowSemaphore.Release();
         }
 
         public static async Task SendMessageToFirstWritableChannel(SocketGuild socketGuild, string message = null, Embed embed = null)
