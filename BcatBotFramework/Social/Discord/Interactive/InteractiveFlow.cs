@@ -14,6 +14,12 @@ namespace BcatBotFramework.Social.Discord.Interactive
             protected set;
         }
 
+        public int LastPageIdx
+        {
+            get;
+            protected set;
+        }
+
         public InteractiveMessage CurrentInteractiveMessage
         {
             get;
@@ -38,7 +44,14 @@ namespace BcatBotFramework.Social.Discord.Interactive
             Channel = channel;
         }
 
-        public abstract Task SetPage(int page);
+        public async Task SetPage(int page)
+        {
+            LastPageIdx = CurrentPageIdx;
+            
+            await SetPageImpl(page);
+        }
+
+        public abstract Task SetPageImpl(int page);
 
     }
 }
