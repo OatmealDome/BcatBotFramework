@@ -2,7 +2,7 @@ using Nintendo.Bcat;
 
 namespace BcatBotFramework.Social.Discord.Settings
 {
-    public class GuildSettings
+    public class GuildSettings : DynamicSettingsData
     {
         public ulong GuildId
         {
