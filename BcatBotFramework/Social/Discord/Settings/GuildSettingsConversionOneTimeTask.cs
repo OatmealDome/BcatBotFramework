@@ -15,7 +15,7 @@ namespace BcatBotFramework.Social.Discord.Settings
                 guildSettings.SetSetting("default_language", guildSettings.DefaultLanguage);
 
                 // Create a new NotificationSettings instance
-                NotificationsSettings notificationsSettings = new NotificationsSettings(guildSettings.TargetChannelId);
+                ChannelSettings notificationsSettings = new ChannelSettings(guildSettings.TargetChannelId);
 
                 // Add it to the GuildSettings
                 guildSettings.ChannelSettings.Add(notificationsSettings);

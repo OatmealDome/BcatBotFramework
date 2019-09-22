@@ -208,11 +208,11 @@ namespace BcatBotFramework.Social.Discord
             List<GuildSettings> allGuildSettings = new List<GuildSettings>(Configuration.LoadedConfiguration.DiscordConfig.GuildSettings);
 
             // Create a list for deregistration candidates
-            List<Tuple<NotificationsSettings, SocketGuild>> deregistrationCandidates = new List<Tuple<NotificationsSettings, SocketGuild>>();
+            List<Tuple<ChannelSettings, SocketGuild>> deregistrationCandidates = new List<Tuple<ChannelSettings, SocketGuild>>();
 
             foreach (GuildSettings guildSettings in allGuildSettings)
             {
-                foreach (NotificationsSettings channelSettings in guildSettings.ChannelSettings)
+                foreach (ChannelSettings channelSettings in guildSettings.ChannelSettings)
                 {
                     // Get the channel
                     SocketGuildChannel channel = (SocketGuildChannel)DiscordBot.GetChannel(channelSettings.ChannelId);
@@ -229,7 +229,7 @@ namespace BcatBotFramework.Social.Discord
                     // Check if we can't write to this channel
                     if (!permissions.Has(ChannelPermission.SendMessages))
                     {
-                        deregistrationCandidates.Add(new Tuple<NotificationsSettings, SocketGuild>(channelSettings, channel.Guild));
+                        deregistrationCandidates.Add(new Tuple<ChannelSettings, SocketGuild>(channelSettings, channel.Guild));
                     }
                 }
             }
@@ -242,7 +242,7 @@ namespace BcatBotFramework.Social.Discord
                 return;
             }
 
-            foreach (Tuple<NotificationsSettings, SocketGuild> tuple in deregistrationCandidates)
+            foreach (Tuple<ChannelSettings, SocketGuild> tuple in deregistrationCandidates)
             {
                 // Remove the channel settings
                 Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(g => g.ChannelSettings.Contains(tuple.Item1)).First().ChannelSettings.Remove(tuple.Item1);

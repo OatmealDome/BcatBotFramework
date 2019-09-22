@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace BcatBotFramework.Social.Discord.Settings
 {
-    public class NotificationsSettings : DynamicSettingsData
+    public class ChannelSettings : DynamicSettingsData
     {
         [JsonProperty("Channel")]
         public ulong ChannelId
@@ -11,7 +11,7 @@ namespace BcatBotFramework.Social.Discord.Settings
             private set;
         }
 
-        public NotificationsSettings(ulong channel) : base()
+        public ChannelSettings(ulong channel) : base()
         {
             ChannelId = channel;
         }

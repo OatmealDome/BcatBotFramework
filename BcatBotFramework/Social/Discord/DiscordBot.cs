@@ -353,7 +353,7 @@ namespace BcatBotFramework.Social.Discord
             return DiscordClient.GetChannel(channelId);
         }
 
-        public static async Task SendNotificationAsync(Predicate<NotificationsSettings> shouldPost, string message = null, Dictionary<Language, Embed> localizedEmbeds = null)
+        public static async Task SendNotificationAsync(Predicate<ChannelSettings> shouldPost, string message = null, Dictionary<Language, Embed> localizedEmbeds = null)
         {
             // Make a copy of the GuildSettings list just in case it is modified while notifications are sent
             List<GuildSettings> allGuildSettings = new List<GuildSettings>(Configuration.LoadedConfiguration.DiscordConfig.GuildSettings);
@@ -361,9 +361,9 @@ namespace BcatBotFramework.Social.Discord
             foreach (GuildSettings guildSettings in allGuildSettings)
             {
                 // Copy the ChannelSettings list
-                List<NotificationsSettings> allChannelSettings = new List<NotificationsSettings>(guildSettings.ChannelSettings);
+                List<ChannelSettings> allChannelSettings = new List<ChannelSettings>(guildSettings.ChannelSettings);
 
-                foreach (NotificationsSettings channelSettings in allChannelSettings)
+                foreach (ChannelSettings channelSettings in allChannelSettings)
                 {
                     // Run the Predicate to see if a message should be sent
                     if (!shouldPost(channelSettings))

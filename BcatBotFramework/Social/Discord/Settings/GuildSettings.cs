@@ -11,7 +11,7 @@ namespace BcatBotFramework.Social.Discord.Settings
             set;
         }
 
-        public List<NotificationsSettings> ChannelSettings
+        public List<ChannelSettings> ChannelSettings
         {
             get;
             set;
