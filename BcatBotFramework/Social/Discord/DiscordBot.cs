@@ -136,7 +136,7 @@ namespace BcatBotFramework.Social.Discord
 
             // Fetch the logging channel
             LoggingChannel = GetChannel(Configuration.LoadedConfiguration.DiscordConfig.LoggingTargetChannel.GuildId,
-                                Configuration.LoadedConfiguration.DiscordConfig.LoggingTargetChannel.ChannelId);
+                                Configuration.LoadedConfiguration.DiscordConfig.LoggingTargetChannel.TargetChannelId);
 
             // Set that we're ready
             IsReady = true;

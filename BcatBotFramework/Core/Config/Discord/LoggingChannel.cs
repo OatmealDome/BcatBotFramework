@@ -10,7 +10,7 @@ namespace BcatBotFramework.Core.Config.Discord
             set;
         }
 
-        public ulong ChannelId
+        public ulong TargetChannelId
         {
             get;
             set;
