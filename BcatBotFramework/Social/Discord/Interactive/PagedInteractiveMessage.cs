@@ -68,6 +68,11 @@ namespace BcatBotFramework.Social.Discord.Interactive
             return Task.FromResult(false);
         }
 
+        public override Task<bool> HandleTextMessage(SocketMessage message)
+        {
+            return Task.FromResult(false);
+        }
+
         public override async Task AddReactions()
         {
             if (CurrentPage == 0 && LastPage > 1)
@@ -93,11 +98,6 @@ namespace BcatBotFramework.Social.Discord.Interactive
                 await this.TargetMessage.AddReactionAsync(EMOTE_TO_BEGINNING);
                 await this.TargetMessage.AddReactionAsync(EMOTE_BACK);
             }
-        }
-
-        public override Task<bool> HandleTextMessage(SocketMessage message)
-        {
-            return Task.FromResult(false);
         }
 
     }
