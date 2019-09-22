@@ -355,34 +355,40 @@ namespace BcatBotFramework.Social.Discord
 
         public static async Task SendNotificationAsync(Predicate<NotificationsSettings> shouldPost, string message = null, Dictionary<Language, Embed> localizedEmbeds = null)
         {
-            // Make a copy of the list just in case it is modified while notifications are sent
-            List<NotificationsSettings> guildList = new List<NotificationsSettings>(Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings);
-
-            foreach (NotificationsSettings settings in guildList)
+            // Make a copy of the GuildSettings list just in case it is modified while notifications are sent
+            List<GuildSettings> allGuildSettings = new List<GuildSettings>(Configuration.LoadedConfiguration.DiscordConfig.GuildSettings);
+            
+            foreach (GuildSettings guildSettings in allGuildSettings)
             {
-                // Run the Predicate to see if a message should be sent
-                if (!shouldPost(settings))
+                // Copy the ChannelSettings list
+                List<NotificationsSettings> allChannelSettings = new List<NotificationsSettings>(guildSettings.ChannelSettings);
+
+                foreach (NotificationsSettings channelSettings in allChannelSettings)
                 {
-                    continue;
-                }
+                    // Run the Predicate to see if a message should be sent
+                    if (!shouldPost(channelSettings))
+                    {
+                        continue;
+                    }
 
-                // Get the guild
-                SocketGuild socketGuild = DiscordBot.GetGuild(settings.GuildId);
+                    // Get the guild
+                    SocketGuild socketGuild = DiscordBot.GetGuild(guildSettings.GuildId);
 
-                // Get the channel
-                SocketTextChannel textChannel = socketGuild.GetTextChannel(settings.ChannelId);
+                    // Get the channel
+                    SocketTextChannel textChannel = socketGuild.GetTextChannel(channelSettings.ChannelId);
 
-                // Get the Embed if it exists
-                Embed embed = (localizedEmbeds != null) ? localizedEmbeds[settings.GetSetting("language")] : null;
+                    // Get the Embed if it exists
+                    Embed embed = localizedEmbeds != null ? localizedEmbeds[channelSettings.GetSetting("language")] : null;
 
-                // Send the message if possible
-                try
-                {
-                    await textChannel.SendMessageAsync(text: message, embed: embed);
-                }
-                catch (Exception exception)
-                {
-                    await DiscordUtil.HandleException(exception, "in ``SendNotificationsAsync()``", socketGuild, textChannel);
+                    // Send the message if possible
+                    try
+                    {
+                        await textChannel.SendMessageAsync(text: message, embed: embed);
+                    }
+                    catch (Exception exception)
+                    {
+                        await DiscordUtil.HandleException(exception, "in ``SendNotificationsAsync()``", socketGuild, textChannel);
+                    }
                 }
             }
         }

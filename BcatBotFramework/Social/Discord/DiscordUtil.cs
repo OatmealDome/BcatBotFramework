@@ -141,13 +141,14 @@ namespace BcatBotFramework.Social.Discord
                 if (guild != null)
                 {
                     // Attempt to get the GuildSettings for this guild
-                    NotificationsSettings notificationsSettings = Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.Where(x => x.GuildId == guild.Id).FirstOrDefault();
+                    GuildSettings guildSettings = Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(x => x.GuildId == guild.Id).FirstOrDefault();
 
                     // Check if there is a GuildSettings
-                    if (notificationsSettings != null)
+                    if (guildSettings != null)
                     {
                         // Set the target language
-                        return notificationsSettings.GetSetting("language");
+                        // TODO: Don't use this
+                        return guildSettings.DefaultLanguage;
                     }
                 }
 
@@ -184,7 +185,7 @@ namespace BcatBotFramework.Social.Discord
         public static async Task ProcessLeftGuild(ulong id, string name = null)
         {
             // Remove any GuildSettings for this guild
-            Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.RemoveAll((guildSettings) =>
+            Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.RemoveAll((guildSettings) =>
             {
                 return guildSettings.GuildId == id;
             });
@@ -203,61 +204,60 @@ namespace BcatBotFramework.Social.Discord
 
         public static async Task FindBadGuilds(bool ignoreExcessiveAmount = false)
         {
-            // Find every guild that registered a channel we can't write to
-            List<NotificationsSettings> badGuilds = Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.Where(guildSettings =>
+            // Create a copy of the GuildSettings
+            List<GuildSettings> allGuildSettings = new List<GuildSettings>(Configuration.LoadedConfiguration.DiscordConfig.GuildSettings);
+
+            // Create a list for deregistration candidates
+            List<Tuple<NotificationsSettings, SocketGuild>> deregistrationCandidates = new List<Tuple<NotificationsSettings, SocketGuild>>();
+
+            foreach (GuildSettings guildSettings in allGuildSettings)
             {
-                // Get the SocketGuild
-                SocketGuild socketGuild = DiscordBot.GetGuild(guildSettings.GuildId);
-
-                // Get the channel
-                SocketGuildChannel channel = socketGuild.GetChannel(guildSettings.ChannelId);
-
-                // Check if the channel no longer exists
-                if (channel == null)
+                foreach (NotificationsSettings channelSettings in guildSettings.ChannelSettings)
                 {
-                    return true;
+                    // Get the channel
+                    SocketGuildChannel channel = (SocketGuildChannel)DiscordBot.GetChannel(channelSettings.ChannelId);
+
+                    // Check if the channel no longer exists
+                    if (channel == null)
+                    {
+                        continue;
+                    }
+
+                    // Get the Permissions
+                    ChannelPermissions permissions = channel.Guild.CurrentUser.GetPermissions(channel);
+
+                    // Check if we can't write to this channel
+                    if (!permissions.Has(ChannelPermission.SendMessages))
+                    {
+                        deregistrationCandidates.Add(new Tuple<NotificationsSettings, SocketGuild>(channelSettings, channel.Guild));
+                    }
                 }
-
-                // Get the Permissions
-                ChannelPermissions permissions = socketGuild.CurrentUser.GetPermissions(channel);
-
-                // Check that we can write to this channel
-                return !permissions.Has(ChannelPermission.SendMessages);
-            }).ToList();
+            }
 
             // Skip deregistration if there are a large number of guilds to deregister
-            if (badGuilds.Count > 5 && !ignoreExcessiveAmount)
+            if (deregistrationCandidates.Count > 5 && !ignoreExcessiveAmount)
             {
-                await DiscordBot.LoggingChannel.SendMessageAsync($"**[DiscordUtil]** Skipping deregistration, there seems to be an excessive amount of guilds to deregister ({badGuilds.Count})");
+                await DiscordBot.LoggingChannel.SendMessageAsync($"**[DiscordUtil]** Skipping deregistration, there seems to be an excessive amount of guilds to deregister ({deregistrationCandidates.Count})");
 
                 return;
             }
-            
-            foreach (NotificationsSettings guildSettings in badGuilds)
+
+            foreach (Tuple<NotificationsSettings, SocketGuild> tuple in deregistrationCandidates)
             {
-                // Deregister the guild
-                await DeregisterGuild(guildSettings);
+                // Remove the channel settings
+                Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(g => g.ChannelSettings.Contains(tuple.Item1)).First().ChannelSettings.Remove(tuple.Item1);
+
+                // Send a message to this server that their guild has been deregistered
+                Embed embed = new EmbedBuilder()
+                    .WithTitle("Warning")
+                    .WithDescription(Localizer.Localize("discord.guild.deregister", tuple.Item1.GetSetting("language")))
+                    .WithColor(Color.Orange)
+                    .Build();
+                
+                await DiscordBot.SendMessageToFirstWritableChannel(tuple.Item2, embed: embed);
+
+                await DiscordBot.LoggingChannel.SendMessageAsync($"**[Guild]** Deregistered \"{tuple.Item2.Name}\" ({tuple.Item2.Id})");
             }
-        }
-
-        public static async Task DeregisterGuild(NotificationsSettings guildSettings)
-        {
-            // Remove the GuildSettings
-            Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.Remove(guildSettings);
-
-            // Get the guild
-            SocketGuild socketGuild = DiscordBot.GetGuild(guildSettings.GuildId);
-
-            // Send a message to this server that their guild has been deregistered
-            Embed embed = new EmbedBuilder()
-                .WithTitle("Warning")
-                .WithDescription(Localizer.Localize("discord.guild.deregister", guildSettings.GetSetting("language")))
-                .WithColor(Color.Orange)
-                .Build();
-            
-            await DiscordBot.SendMessageToFirstWritableChannel(socketGuild, embed: embed);
-
-            await DiscordBot.LoggingChannel.SendMessageAsync($"**[Guild]** Deregistered \"{socketGuild.Name}\" ({socketGuild.Id})");
         }
         
     }

@@ -44,12 +44,6 @@ namespace BcatBotFramework.Core.Config
             set;
         }
 
-        public List<NotificationsSettings> NotificationsSettings
-        {
-            get;
-            set;
-        }
-
         public string CommandPrefix
         {
             get;
@@ -93,10 +87,9 @@ namespace BcatBotFramework.Core.Config
             LoggingTargetChannel = new LoggingChannel()
             {
                 GuildId = 194559160572968961, // OatmealDome Test Server
-                ChannelId = 194559160572968961, // #general
+                TargetChannelId = 194559160572968961, // #general
             };
             GuildSettings = new List<GuildSettings>();
-            NotificationsSettings = new List<NotificationsSettings>();
             CommandPrefix = "test.";
             AlternatorRate = 10;
             MessageCacheSize = 10;

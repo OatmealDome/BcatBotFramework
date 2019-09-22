@@ -11,14 +11,14 @@ namespace BcatBotFramework.Social.Discord.Settings
             // Loop over every GuildSettings
             foreach (GuildSettings guildSettings in Configuration.LoadedConfiguration.DiscordConfig.GuildSettings)
             {
+                // Add the default language to the settings data
+                guildSettings.SetSetting("default_language", guildSettings.DefaultLanguage);
+
                 // Create a new NotificationSettings instance
-                NotificationsSettings notificationsSettings = new NotificationsSettings(guildSettings.GuildId, guildSettings.TargetChannelId);
+                NotificationsSettings notificationsSettings = new NotificationsSettings(guildSettings.TargetChannelId);
 
-                // Set the language
-                notificationsSettings.SetSetting("language", guildSettings.DefaultLanguage);
-
-                // Add this instance
-                Configuration.LoadedConfiguration.DiscordConfig.NotificationsSettings.Add(notificationsSettings);
+                // Add it to the GuildSettings
+                guildSettings.ChannelSettings.Add(notificationsSettings);
             }
 
             return Task.FromResult(0);
