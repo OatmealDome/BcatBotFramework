@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Nintendo.Bcat;
 using BcatBotFramework.Core.Config.Discord;
-using BcatBotFramework.Social.Discord.Notifications;
+using BcatBotFramework.Social.Discord.Settings;
 
 namespace BcatBotFramework.Core.Config
 {

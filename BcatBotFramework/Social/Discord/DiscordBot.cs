@@ -15,7 +15,7 @@ using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Scheduler;
 using BcatBotFramework.Scheduler.Job;
-using BcatBotFramework.Social.Discord.Notifications;
+using BcatBotFramework.Social.Discord.Settings;
 using System.Threading;
 using BcatBotFramework.Social.Discord.Interactive;
 

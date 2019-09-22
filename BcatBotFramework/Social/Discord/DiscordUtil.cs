@@ -13,7 +13,7 @@ using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Internationalization;
 using System.Reflection;
-using BcatBotFramework.Social.Discord.Notifications;
+using BcatBotFramework.Social.Discord.Settings;
 
 namespace BcatBotFramework.Social.Discord
 {

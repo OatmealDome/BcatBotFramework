@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace BcatBotFramework.Social.Discord.Notifications
+namespace BcatBotFramework.Social.Discord.Settings
 {
     public class NotificationsSettings
     {
