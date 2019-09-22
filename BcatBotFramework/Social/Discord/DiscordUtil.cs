@@ -132,7 +132,7 @@ namespace BcatBotFramework.Social.Discord
             await channel.SendMessageAsync(embed: embedBuilder.Build());
         }
 
-        public static Language GetDefaultLanguage(IGuild guild, string specifiedLanguage = null)
+        public static Language GetDefaultLanguage(IGuild guild, IChannel channel = null, string specifiedLanguage = null)
         {
             // Check if a language was specified
             if (specifiedLanguage == null)
@@ -146,9 +146,22 @@ namespace BcatBotFramework.Social.Discord
                     // Check if there is a GuildSettings
                     if (guildSettings != null)
                     {
-                        // Set the target language
-                        // TODO: Don't use this
-                        return guildSettings.DefaultLanguage;
+                        // Check if there is a channel specified
+                        if (channel != null)
+                        {
+                            // Attempt to get the ChannelSettings
+                            ChannelSettings channelSettings = guildSettings.ChannelSettings.Where(c => c.ChannelId == channel.Id).FirstOrDefault();
+
+                            // Check if it exists
+                            if (channelSettings != null)
+                            {
+                                // Return the channel's language
+                                return channelSettings.GetSetting("language");
+                            }
+                        }
+
+                        // Return the guild's default language
+                        return guildSettings.GetSetting("default_language");
                     }
                 }
 
