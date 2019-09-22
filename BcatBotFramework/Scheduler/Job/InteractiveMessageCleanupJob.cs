@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BcatBotFramework.Social.Discord;
+using BcatBotFramework.Social.Discord.Interactive;
 using Quartz;
 
 namespace BcatBotFramework.Scheduler.Job

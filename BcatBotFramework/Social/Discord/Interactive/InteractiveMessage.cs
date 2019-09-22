@@ -7,7 +7,7 @@ using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 
-namespace BcatBotFramework.Social.Discord
+namespace BcatBotFramework.Social.Discord.Interactive
 {
     public abstract class InteractiveMessage
     {
