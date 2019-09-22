@@ -135,7 +135,8 @@ namespace BcatBotFramework.Social.Discord
             Console.WriteLine("DiscordBot started successfully");
 
             // Fetch the logging channel
-            LoggingChannel = GetChannel(Configuration.LoadedConfiguration.DiscordConfig.LoggingTargetChannel);
+            LoggingChannel = GetChannel(Configuration.LoadedConfiguration.DiscordConfig.LoggingTargetChannel.GuildId,
+                                Configuration.LoadedConfiguration.DiscordConfig.LoggingTargetChannel.ChannelId);
 
             // Set that we're ready
             IsReady = true;
@@ -340,11 +341,6 @@ namespace BcatBotFramework.Social.Discord
         public static SocketGuild GetGuild(ulong id)
         {
             return DiscordClient.GetGuild(id);
-        }
-
-        public static SocketTextChannel GetChannel(GuildSettings guildSettings)
-        {
-            return GetChannel(guildSettings.GuildId, guildSettings.TargetChannelId);
         }
 
         public static SocketTextChannel GetChannel(ulong guildId, ulong channelId)

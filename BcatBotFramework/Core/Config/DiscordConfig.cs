@@ -32,7 +32,7 @@ namespace BcatBotFramework.Core.Config
             set;
         }
 
-        public GuildSettings LoggingTargetChannel
+        public LoggingChannel LoggingTargetChannel
         {
             get;
             set;
@@ -90,11 +90,10 @@ namespace BcatBotFramework.Core.Config
                 112966101368901632, // OatmealDome
                 180994059542855681 // Simonx22
             };
-            LoggingTargetChannel = new GuildSettings()
+            LoggingTargetChannel = new LoggingChannel()
             {
                 GuildId = 194559160572968961, // OatmealDome Test Server
-                TargetChannelId = 194559160572968961, // #general
-                DefaultLanguage = Language.EnglishUS
+                ChannelId = 194559160572968961, // #general
             };
             GuildSettings = new List<GuildSettings>();
             NotificationsSettings = new List<NotificationsSettings>();
