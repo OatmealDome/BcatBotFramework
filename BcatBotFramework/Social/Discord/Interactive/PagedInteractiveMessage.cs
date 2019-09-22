@@ -95,5 +95,10 @@ namespace BcatBotFramework.Social.Discord.Interactive
             }
         }
 
+        public override Task<bool> HandleTextMessage(SocketMessage message)
+        {
+            return Task.FromResult(false);
+        }
+
     }
 }
