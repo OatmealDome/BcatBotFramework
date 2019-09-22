@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BcatBotFramework.Internationalization;
 using BcatBotFramework.Social.Discord;
 using Discord;
 using Discord.WebSocket;
@@ -66,11 +67,13 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
             { Language.ChineseTraditional, "繁體中文" }
         };
 
+        private string LocalizedPrompt;
         private IEnumerable<Language> ValidLanguages;
         private Func<Language, Task> Callback;
 
-        public LanguageChooserMessage(IUser user, IEnumerable<Language> validLangs, Func<Language, Task> callback) : base(user)
+        public LanguageChooserMessage(IUser user, IEnumerable<Language> validLangs, Func<Language, Task> callback, string promptLocalizable = null, Language? language = null) : base(user)
         {
+            LocalizedPrompt = (promptLocalizable != null && language.HasValue) ? Localizer.Localize(promptLocalizable, language.Value) : Localizer.Localize("discord.language_chooser.default_prompt", Language.EnglishUS);
             ValidLanguages = validLangs;
             Callback = callback;
         }
@@ -90,7 +93,7 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
         public override MessageProperties CreateMessageProperties()
         {
             // Create the description
-            string description = "Please choose a language.\n\n";
+            string description = $"{LocalizedPrompt}\n\n";
             foreach (Language language in ValidLanguages)
             {
                 description += $"{LanguageEmotes.Where(x => x.Item1 == language).FirstOrDefault().Item2.Name} - {LanguageNames[language]}\n";
