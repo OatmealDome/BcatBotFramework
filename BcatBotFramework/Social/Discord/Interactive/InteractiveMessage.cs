@@ -13,7 +13,7 @@ namespace BcatBotFramework.Social.Discord.Interactive
     {
         private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
         
-        protected RestUserMessage TargetMessage
+        public IUserMessage TargetMessage
         {
             get;
             set;
@@ -50,19 +50,29 @@ namespace BcatBotFramework.Social.Discord.Interactive
             this.User = user;
         }
 
+        protected InteractiveMessage(IUser user, IUserMessage message)
+        {
+            this.TargetMessage = message;
+            this.User = user;
+        }
+
         public async Task SendInitialMessage(ISocketMessageChannel targetChannel)
         {
-            // Check if we've already sent the initial message
+            // Check if a message already exists
             if (TargetMessage != null)
             {
-                throw new Exception("Cannot send initial message twice");
+                await ModifyOriginalMessage();
+
+                await ClearReactions();
             }
+            else
+            {
+                // Create the initial message
+                MessageProperties properties = CreateMessageProperties();
 
-            // Create the initial message
-            MessageProperties properties = CreateMessageProperties();
-
-            // Send the message
-            TargetMessage = await targetChannel.SendMessageAsync(text: properties.Content.GetValueOrDefault(), embed: properties.Embed.GetValueOrDefault());
+                // Send the message
+                TargetMessage = await targetChannel.SendMessageAsync(text: properties.Content.GetValueOrDefault(), embed: properties.Embed.GetValueOrDefault());
+            }
 
             // Set the channel
             Channel = targetChannel;
