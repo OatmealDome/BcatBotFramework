@@ -71,11 +71,16 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
         private IEnumerable<Language> ValidLanguages;
         private Func<Language, Task> Callback;
 
-        public LanguageChooserMessage(IUser user, IEnumerable<Language> validLangs, Func<Language, Task> callback, string promptLocalizable = null, Language? language = null) : base(user)
+        public LanguageChooserMessage(IUser user, IUserMessage message, IEnumerable<Language> validLangs, Func<Language, Task> callback, string promptLocalizable = null, Language? language = null) : base(user, message)
         {
             LocalizedPrompt = (promptLocalizable != null && language.HasValue) ? Localizer.Localize(promptLocalizable, language.Value) : Localizer.Localize("discord.language_chooser.default_prompt", Language.EnglishUS);
             ValidLanguages = validLangs;
             Callback = callback;
+        }
+
+        public LanguageChooserMessage(IUser user, IEnumerable<Language> validLangs, Func<Language, Task> callback, string promptLocalizable = null, Language? language = null) : this(user, null, validLangs, callback, promptLocalizable, language)
+        {
+
         }
 
         public override async Task AddReactions()
