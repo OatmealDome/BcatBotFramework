@@ -17,6 +17,12 @@ namespace BcatBotFramework.Social.Discord.Settings
             set;
         }
 
+        public GuildSettings(ulong guildId)
+        {
+            GuildId = guildId;
+            ChannelSettings = new List<ChannelSettings>();
+        }
+
         // Legacy fields start
         // Only here for conversion purposes - should never be used by applications
         // Will be removed when all applications have been updated
