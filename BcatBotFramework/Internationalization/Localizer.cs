@@ -18,23 +18,58 @@ namespace BcatBotFramework.Internationalization
         {
             Localizations = new Dictionary<Language, Dictionary<string, string>>();
 
-            // Populate the Dictionary for each Languages
+            // Check if the new framework-specific strings directory is available
+            if (System.IO.Directory.Exists(Path.Combine(Configuration.LoadedConfiguration.LocalizerConfig.LocalizationsDirectory, "framework")))
+            {
+                // Populate the Dictionary for each Language
+                foreach (Language language in LanguageExtensions.GetAllLanguages())
+                {
+                    // Read the framework JSONs
+                    string path = Path.Combine(Configuration.LoadedConfiguration.LocalizerConfig.LocalizationsDirectory, "framework", language.GetCode() + ".json");
+
+                    // Check if the file exists
+                    if (File.Exists(path))
+                    {
+                        // Load the file
+                        Localizations[language] = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(path));
+                    }
+                    else
+                    {
+                        // Create a new blank Dictionary
+                        Localizations[language] = new Dictionary<string, string>();
+                    }
+                }
+            }
+
+            // Populate the Dictionary for each Language
             foreach (Language language in LanguageExtensions.GetAllLanguages())
             {
                 // Create the localization file path
-                string path = Path.Combine(Configuration.LoadedConfiguration.LocalizerConfig.LocalizationsDirectory, language.GetCode() + ".json");
+                string path = Path.Combine(Configuration.LoadedConfiguration.LocalizerConfig.LocalizationsDirectory, "application", language.GetCode() + ".json");
 
                 // Check if the file exists
                 if (File.Exists(path))
                 {
                     // Load the file
-                    Localizations[language] = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(path));
+                    Dictionary<string, string> applicationStrings = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(path));
+
+                    // Get every pair
+                    foreach (KeyValuePair<string, string> pair in applicationStrings)
+                    {
+                        // Check if this key does not exist
+                        if (!Localizations[language].TryGetValue(pair.Key, out string existTestVal))
+                        {
+                            // Write the key into the master Dictionary
+                            Localizations[language][pair.Key] = pair.Value;
+                        }
+                    }
                 }
-                else
-                {
-                    // Create a new blank Dictionary
-                    Localizations[language] = new Dictionary<string, string>();
-                }
+            }
+
+            // Check that the localizable missing message is available
+            if (!Localizations[Language.EnglishUS].TryGetValue("localizer.missing_localizable", out string missingMessage))
+            {
+                throw new Exception("Special message for missing localizable (\"localizer.missing_localizable\") is missing");
             }
         }
 
@@ -59,8 +94,8 @@ namespace BcatBotFramework.Internationalization
                 return englishValue;
             }
 
-            // TODO: Real localization
-            return $"String not found ({key}) - report this bug to OatmealDome";
+            // Return the error message
+            return string.Format(Localize("localizer.missing_localizable", language), key);
         }
 
         public static Dictionary<Language, string> LocalizeToAllLanguages(string key)
