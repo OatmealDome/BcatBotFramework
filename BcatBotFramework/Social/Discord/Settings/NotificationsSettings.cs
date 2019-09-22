@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace BcatBotFramework.Social.Discord.Settings
 {
-    public class NotificationsSettings
+    public class NotificationsSettings : DynamicSettingsData
     {
         [JsonProperty("Guild")]
         public ulong GuildId
@@ -19,29 +18,10 @@ namespace BcatBotFramework.Social.Discord.Settings
             private set;
         }
 
-        [JsonProperty("Data")]
-        private Dictionary<string, dynamic> Data;
-
-        public NotificationsSettings(ulong guild, ulong channel)
+        public NotificationsSettings(ulong guild, ulong channel) : base()
         {
             GuildId = guild;
             ChannelId = channel;
-            Data = new Dictionary<string, dynamic>();
-        }
-
-        public dynamic GetSetting(string name)
-        {
-            if (Data.TryGetValue(name, out dynamic val))
-            {
-                return val;
-            }
-
-            return null;
-        }
-
-        public void SetSetting(string name, dynamic val)
-        {
-            Data[name] = val;
         }
 
     }
