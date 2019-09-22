@@ -6,7 +6,6 @@ using Discord;
 using Discord.WebSocket;
 using Quartz;
 using BcatBotFramework.Core.Config;
-using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
 
 namespace SmashBcatDetector.Scheduler.Job

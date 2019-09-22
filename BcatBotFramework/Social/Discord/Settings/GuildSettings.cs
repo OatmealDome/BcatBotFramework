@@ -1,6 +1,6 @@
 using Nintendo.Bcat;
 
-namespace BcatBotFramework.Core.Config.Discord
+namespace BcatBotFramework.Social.Discord.Settings
 {
     public class GuildSettings
     {

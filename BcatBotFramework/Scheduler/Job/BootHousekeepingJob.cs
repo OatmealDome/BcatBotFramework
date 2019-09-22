@@ -6,11 +6,11 @@ using Discord;
 using Discord.WebSocket;
 using Quartz;
 using BcatBotFramework.Core.Config;
-using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Scheduler;
 using System.Reflection;
 using BcatBotFramework.Core;
+using BcatBotFramework.Social.Discord.Settings;
 
 namespace BcatBotFramework.Scheduler.Job
 {

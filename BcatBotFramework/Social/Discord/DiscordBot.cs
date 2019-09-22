@@ -11,7 +11,6 @@ using Discord.WebSocket;
 using Quartz;
 using BcatBotFramework.Internationalization;
 using BcatBotFramework.Core.Config;
-using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Scheduler;
 using BcatBotFramework.Scheduler.Job;

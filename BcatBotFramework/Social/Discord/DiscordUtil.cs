@@ -9,7 +9,6 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using BcatBotFramework.Core.Config;
-using BcatBotFramework.Core.Config.Discord;
 using BcatBotFramework.Social.Discord;
 using BcatBotFramework.Internationalization;
 using System.Reflection;

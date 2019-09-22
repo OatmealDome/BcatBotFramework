@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using BcatBotFramework.Core;
 using BcatBotFramework.Core.Config;
-using BcatBotFramework.Core.Config.Discord;
 
 namespace BcatBotFramework.Social.Discord.Settings
 {
