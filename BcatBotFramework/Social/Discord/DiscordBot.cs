@@ -17,6 +17,7 @@ using BcatBotFramework.Scheduler.Job;
 using BcatBotFramework.Social.Discord.Settings;
 using System.Threading;
 using BcatBotFramework.Social.Discord.Interactive;
+using BcatBotFramework.Social.Discord.Interactive.Setup;
 
 namespace BcatBotFramework.Social.Discord
 {
@@ -476,6 +477,20 @@ done:
             
             // Release the semaphore
             InteractiveFlowSemaphore.Release();
+        }
+
+        public static async Task<bool> IsSetupFlowRunningInGuild(IGuild guild)
+        {
+            // Acquire the semaphore
+            await InteractiveFlowSemaphore.WaitAsync();
+
+            // Check if the SetupFlow is running
+            bool isRunning = ActiveInteractiveFlows.Where(f => f is SetupFlow && (f as SetupFlow).Guild.Id == guild.Id).Count() == 1;
+
+            // Release the semaphore
+            InteractiveFlowSemaphore.Release();
+
+            return isRunning;
         }
 
         public static async Task SendMessageToFirstWritableChannel(SocketGuild socketGuild, string message = null, Embed embed = null)
