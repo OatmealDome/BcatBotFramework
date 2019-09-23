@@ -9,5 +9,6 @@
     "discord.error.exception": "An error has occurred. JelonzoBot's owners have been notified.",
     "discord.error.not_admin": "You are not allowed to do this.",
     "discord.error.bad_code": "This language code is invalid. You can see a list of valid language codes by running ``j.languages``.",
-    "discord.error.unknown": "An unknown error has occurred."
+    "discord.error.unknown": "An unknown error has occurred.",
+    "localizer.missing_localizable": "Missing string {0} - report this bug to support@oatmealdome.me"
 }
