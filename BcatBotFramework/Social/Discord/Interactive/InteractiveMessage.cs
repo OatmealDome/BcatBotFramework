@@ -45,6 +45,12 @@ namespace BcatBotFramework.Social.Discord.Interactive
             set;
         }
 
+        public DateTime LastValidActivity
+        {
+            get;
+            private set;
+        } = DateTime.Now;
+
         protected InteractiveMessage(IUser user)
         {
             this.User = user;
@@ -82,6 +88,9 @@ namespace BcatBotFramework.Social.Discord.Interactive
 
             // Set this as active
             IsActive = true;
+
+            // Set the last activity
+            LastValidActivity = DateTime.Now;
         }
 
         public async Task ReactionAdded(SocketReaction reaction)
@@ -107,6 +116,9 @@ namespace BcatBotFramework.Social.Discord.Interactive
             // Add and clear any reactions if needed
             await AddReactions();
 
+            // Set the last activity
+            LastValidActivity = DateTime.Now;
+
             // Release the semaphore
             Semaphore.Release();
         }
@@ -127,6 +139,9 @@ namespace BcatBotFramework.Social.Discord.Interactive
 
             // Modify the message
             await ModifyOriginalMessage();
+            
+            // Set the last activity
+            LastValidActivity = DateTime.Now;
 
             // Release the semaphore
             Semaphore.Release();
