@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Nintendo.Bcat;
 
@@ -11,7 +12,7 @@ namespace BcatBotFramework.Social.Discord.Settings
             set;
         }
 
-        public List<ChannelSettings> ChannelSettings
+        public ConcurrentDictionary<ulong, DynamicSettingsData> ChannelSettings
         {
             get;
             set;
@@ -20,7 +21,7 @@ namespace BcatBotFramework.Social.Discord.Settings
         public GuildSettings(ulong guildId)
         {
             GuildId = guildId;
-            ChannelSettings = new List<ChannelSettings>();
+            ChannelSettings = new ConcurrentDictionary<ulong, DynamicSettingsData>();
         }
 
         // Legacy fields start

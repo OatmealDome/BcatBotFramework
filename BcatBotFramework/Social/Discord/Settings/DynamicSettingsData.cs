@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace BcatBotFramework.Social.Discord.Settings
 {
-    public abstract class DynamicSettingsData
+    public class DynamicSettingsData
     {
         [JsonProperty("Data")]
         private ConcurrentDictionary<string, dynamic> Data;

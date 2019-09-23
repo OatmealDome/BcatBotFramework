@@ -353,20 +353,17 @@ namespace BcatBotFramework.Social.Discord
             return DiscordClient.GetChannel(channelId);
         }
 
-        public static async Task SendNotificationAsync(Predicate<ChannelSettings> shouldPost, string message = null, Dictionary<Language, Embed> localizedEmbeds = null)
+        public static async Task SendNotificationAsync(Predicate<DynamicSettingsData> shouldPost, string message = null, Dictionary<Language, Embed> localizedEmbeds = null)
         {
             // Make a copy of the GuildSettings list just in case it is modified while notifications are sent
             List<GuildSettings> allGuildSettings = new List<GuildSettings>(Configuration.LoadedConfiguration.DiscordConfig.GuildSettings);
             
             foreach (GuildSettings guildSettings in allGuildSettings)
             {
-                // Copy the ChannelSettings list
-                List<ChannelSettings> allChannelSettings = new List<ChannelSettings>(guildSettings.ChannelSettings);
-
-                foreach (ChannelSettings channelSettings in allChannelSettings)
+                foreach (KeyValuePair<ulong, DynamicSettingsData> pair in guildSettings.ChannelSettings)
                 {
                     // Run the Predicate to see if a message should be sent
-                    if (!shouldPost(channelSettings))
+                    if (!shouldPost(pair.Value))
                     {
                         continue;
                     }
@@ -375,10 +372,10 @@ namespace BcatBotFramework.Social.Discord
                     SocketGuild socketGuild = DiscordBot.GetGuild(guildSettings.GuildId);
 
                     // Get the channel
-                    SocketTextChannel textChannel = socketGuild.GetTextChannel(channelSettings.ChannelId);
+                    SocketTextChannel textChannel = socketGuild.GetTextChannel(pair.Key);
 
                     // Get the Embed if it exists
-                    Embed embed = localizedEmbeds != null ? localizedEmbeds[channelSettings.GetSetting("language")] : null;
+                    Embed embed = localizedEmbeds != null ? localizedEmbeds[pair.Value.GetSetting("language")] : null;
 
                     // Send the message if possible
                     try

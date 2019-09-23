@@ -14,11 +14,12 @@ namespace BcatBotFramework.Social.Discord.Settings
                 // Add the default language to the settings data
                 guildSettings.SetSetting("default_language", guildSettings.DefaultLanguage);
 
-                // Create a new NotificationSettings instance
-                ChannelSettings notificationsSettings = new ChannelSettings(guildSettings.TargetChannelId);
+                // Create a new DynamicSettingsData instance and add the language
+                DynamicSettingsData channelSettings = new DynamicSettingsData();
+                channelSettings.SetSetting("language", guildSettings.DefaultLanguage);
 
-                // Add it to the GuildSettings
-                guildSettings.ChannelSettings.Add(notificationsSettings);
+                // Create a new DynamicSettingsData instance and add it to the GuildSettings
+                guildSettings.ChannelSettings.TryAdd(guildSettings.TargetChannelId, channelSettings);
             }
 
             return Task.FromResult(0);

@@ -149,8 +149,8 @@ namespace BcatBotFramework.Social.Discord
                         // Check if there is a channel specified
                         if (channel != null)
                         {
-                            // Attempt to get the ChannelSettings
-                            ChannelSettings channelSettings = guildSettings.ChannelSettings.Where(c => c.ChannelId == channel.Id).FirstOrDefault();
+                            // Attempt to get a DynamicSettingsData for this channel
+                            DynamicSettingsData channelSettings = guildSettings.ChannelSettings.Where(c => c.Key == channel.Id).FirstOrDefault().Value;
 
                             // Check if it exists
                             if (channelSettings != null)
@@ -221,14 +221,14 @@ namespace BcatBotFramework.Social.Discord
             List<GuildSettings> allGuildSettings = new List<GuildSettings>(Configuration.LoadedConfiguration.DiscordConfig.GuildSettings);
 
             // Create a list for deregistration candidates
-            List<Tuple<ChannelSettings, SocketGuild>> deregistrationCandidates = new List<Tuple<ChannelSettings, SocketGuild>>();
+            List<SocketGuildChannel> deregistrationCandidates = new List<SocketGuildChannel>();
 
             foreach (GuildSettings guildSettings in allGuildSettings)
             {
-                foreach (ChannelSettings channelSettings in guildSettings.ChannelSettings)
+                foreach (KeyValuePair<ulong, DynamicSettingsData> pair in guildSettings.ChannelSettings)
                 {
                     // Get the channel
-                    SocketGuildChannel channel = (SocketGuildChannel)DiscordBot.GetChannel(channelSettings.ChannelId);
+                    SocketGuildChannel channel = (SocketGuildChannel)DiscordBot.GetChannel(pair.Key);
 
                     // Check if the channel no longer exists
                     if (channel == null)
@@ -242,7 +242,7 @@ namespace BcatBotFramework.Social.Discord
                     // Check if we can't write to this channel
                     if (!permissions.Has(ChannelPermission.SendMessages))
                     {
-                        deregistrationCandidates.Add(new Tuple<ChannelSettings, SocketGuild>(channelSettings, channel.Guild));
+                        deregistrationCandidates.Add(channel);
                     }
                 }
             }
@@ -255,21 +255,21 @@ namespace BcatBotFramework.Social.Discord
                 return;
             }
 
-            foreach (Tuple<ChannelSettings, SocketGuild> tuple in deregistrationCandidates)
+            foreach (SocketGuildChannel guildChannel in deregistrationCandidates)
             {
                 // Remove the channel settings
-                Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(g => g.ChannelSettings.Contains(tuple.Item1)).First().ChannelSettings.Remove(tuple.Item1);
+                Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.Where(g => g.GuildId == guildChannel.Guild.Id).FirstOrDefault().ChannelSettings.TryRemove(guildChannel.Id, out DynamicSettingsData data);
 
                 // Send a message to this server that their guild has been deregistered
                 Embed embed = new EmbedBuilder()
                     .WithTitle("Warning")
-                    .WithDescription(Localizer.Localize("discord.guild.deregister", tuple.Item1.GetSetting("language")))
+                    .WithDescription(Localizer.Localize("discord.guild.deregister", data.GetSetting("language")))
                     .WithColor(Color.Orange)
                     .Build();
                 
-                await DiscordBot.SendMessageToFirstWritableChannel(tuple.Item2, embed: embed);
+                await DiscordBot.SendMessageToFirstWritableChannel(guildChannel.Guild, embed: embed);
 
-                await DiscordBot.LoggingChannel.SendMessageAsync($"**[Guild]** Deregistered \"{tuple.Item2.Name}\" ({tuple.Item2.Id})");
+                await DiscordBot.LoggingChannel.SendMessageAsync($"**[Guild]** Deregistered \"#{guildChannel.Name}\" ({guildChannel.Id}) on \"{guildChannel.Guild.Name}\"");
             }
         }
         
