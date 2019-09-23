@@ -8,7 +8,7 @@ namespace BcatBotFramework.Social.Discord.Settings
         public ulong ChannelId
         {
             get;
-            private set;
+            set;
         }
 
         public ChannelSettings(ulong channel) : base()
