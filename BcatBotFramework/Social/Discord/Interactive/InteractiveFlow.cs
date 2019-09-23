@@ -49,6 +49,8 @@ namespace BcatBotFramework.Social.Discord.Interactive
             LastPageIdx = CurrentPageIdx;
             
             await SetPageImpl(page);
+
+            CurrentPageIdx = page;
         }
 
         public abstract Task SetPageImpl(int page);
