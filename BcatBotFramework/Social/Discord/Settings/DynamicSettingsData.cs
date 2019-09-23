@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using Newtonsoft.Json;
 
 namespace BcatBotFramework.Social.Discord.Settings
@@ -6,11 +6,11 @@ namespace BcatBotFramework.Social.Discord.Settings
     public abstract class DynamicSettingsData
     {
         [JsonProperty("Data")]
-        private Dictionary<string, dynamic> Data;
+        private ConcurrentDictionary<string, dynamic> Data;
 
         public DynamicSettingsData()
         {
-            Data = new Dictionary<string, dynamic>();
+            Data = new ConcurrentDictionary<string, dynamic>();
         }
 
         public dynamic GetSetting(string name)
