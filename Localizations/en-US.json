@@ -10,6 +10,8 @@
     "discord.error.not_admin": "You are not allowed to do this.",
     "discord.error.bad_code": "This language code is invalid. You can see a list of valid language codes by running ``j.languages``.",
     "discord.error.unknown": "An unknown error has occurred.",
+    "discord.interactive_timeout.title": "Timed Out",
+    "discord.interactive_timeout.description": "This command has been closed due to inactivity.",
     "discord.setup.error.already_running": "Setup is already running in this server. Only one setup can run at a time.",
     "discord.setup.mode_select.title": "Select Mode",
     "discord.setup.mode_select.pre_prompt.deleted": "**The settings for the channel were deleted.**",

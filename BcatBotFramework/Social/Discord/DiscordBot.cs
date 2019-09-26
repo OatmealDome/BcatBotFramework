@@ -147,6 +147,7 @@ namespace BcatBotFramework.Social.Discord
 
             // Schedule jobs
             await QuartzScheduler.ScheduleJob<DiscordPlayingAlternatorJob>("Normal", Configuration.LoadedConfiguration.DiscordConfig.AlternatorRate);
+            await QuartzScheduler.ScheduleJob<DiscordInteractiveThingsCleanupJob>("Normal", Configuration.LoadedConfiguration.DiscordConfig.InteractiveMessageTimeout * 60);
         }
 
         private static async Task MessageReceived(SocketMessage socketMessage)
@@ -402,16 +403,6 @@ namespace BcatBotFramework.Social.Discord
             // Add this to the active messages
             ActiveInteractiveMessages.Add(message);
 
-            // Create a JobDataMap
-            JobDataMap dataMap = new JobDataMap();
-            dataMap.Put("messageInstance", message);
-
-            // Create the timeout time
-            DateTime timeoutTime = DateTime.Now.AddMinutes(Configuration.LoadedConfiguration.DiscordConfig.InteractiveMessageTimeout);
-
-            // Schedule the cleanup job
-            await QuartzScheduler.ScheduleJob<InteractiveMessageCleanupJob>("Normal" + ++InteractiveMessageJobCounter, timeoutTime, dataMap);
-
             // Release the semaphore
             InteractiveMessageSemaphore.Release();
         }
@@ -439,6 +430,20 @@ namespace BcatBotFramework.Social.Discord
                 await message.ClearReactions();
             }
 
+            // Get a Language if possible
+            IGuildChannel guildChannel = message.Channel as IGuildChannel;
+            Language language = guildChannel != null ? DiscordUtil.GetDefaultLanguage(guildChannel.Guild, guildChannel) : Language.EnglishUS;
+
+            // Modify the message to say that it has timed out
+            await message.TargetMessage.ModifyAsync(p =>
+            {
+                p.Content = null;
+                p.Embed = new EmbedBuilder()
+                            .WithTitle(Localizer.Localize("discord.interactive_timeout.title", language))
+                            .WithDescription(Localizer.Localize("discord.interactive_timeout.description", language))
+                            .Build();
+            });
+
 done:
             // Release the semaphore
             InteractiveMessageSemaphore.Release();
@@ -454,8 +459,6 @@ done:
 
             // Add this to the active messages
             ActiveInteractiveFlows.Add(interactiveFlow);
-
-            // TODO: schedule cleanup job
 
             // Release the semaphore
             InteractiveFlowSemaphore.Release();
@@ -491,6 +494,45 @@ done:
             InteractiveFlowSemaphore.Release();
 
             return isRunning;
+        }
+
+        public static async Task DeactivateInactiveInteractiveThings()
+        {
+            // Get the maximum timeout
+            int timeout = Configuration.LoadedConfiguration.DiscordConfig.InteractiveMessageTimeout;
+
+            // Get the comparison time
+            DateTime now = DateTime.Now;
+
+            // Acquire the flow semaphore
+            await InteractiveFlowSemaphore.WaitAsync();
+
+            // Get all inactive flows
+            List<InteractiveFlow> inactiveFlows = ActiveInteractiveFlows.Where(f => f.CurrentInteractiveMessage.LastValidActivity.AddMinutes(timeout) < now).ToList();
+
+            // Release the semaphore
+            InteractiveFlowSemaphore.Release();
+
+            // Deactivate all
+            foreach (InteractiveFlow flow in inactiveFlows)
+            {
+                await DeactivateInteractiveFlow(flow);
+            }
+
+            // Acquire the message semaphore
+            await InteractiveMessageSemaphore.WaitAsync();
+
+            // Get all inactive messages
+            List<InteractiveMessage> inactiveMessages = ActiveInteractiveMessages.Where(m => m.LastValidActivity.AddMinutes(timeout) < now).ToList();
+
+            // Release the semaphore
+            InteractiveMessageSemaphore.Release();
+
+            // Deactivate all
+            foreach (InteractiveMessage message in inactiveMessages)
+            {
+                await DeactivateInteractiveMessage(message);
+            }
         }
 
         public static async Task SendMessageToFirstWritableChannel(SocketGuild socketGuild, string message = null, Embed embed = null)
