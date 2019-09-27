@@ -11,6 +11,13 @@ namespace BcatBotFramework.Scheduler.Job
     {
         public async Task Execute(IJobExecutionContext context)
         {
+            // Check if DiscordBot is even connected
+            if (!DiscordBot.IsReady)
+            {
+                // Do nothing on this run
+                return;
+            }
+            
             // Increment the current state
             DiscordBot.PlayingState++;
 
