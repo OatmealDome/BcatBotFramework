@@ -142,6 +142,8 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
 
                 // Create an embed
                 await DiscordUtil.SendErrorMessageByDescription(guild, this.Channel, description);
+
+                return false;
             }
 
             if (SetupFlow.ChannelSettings == null)
