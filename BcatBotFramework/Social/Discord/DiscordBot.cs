@@ -407,7 +407,7 @@ namespace BcatBotFramework.Social.Discord
             InteractiveMessageSemaphore.Release();
         }
 
-        public static async Task DeactivateInteractiveMessage(InteractiveMessage message)
+        public static async Task DeactivateInteractiveMessage(InteractiveMessage message, bool isBecauseInactive = false)
         {
             // Acquire the semaphore
             await InteractiveMessageSemaphore.WaitAsync();
@@ -434,15 +434,18 @@ namespace BcatBotFramework.Social.Discord
             IGuildChannel guildChannel = message.Channel as IGuildChannel;
             Language language = guildChannel != null ? DiscordUtil.GetDefaultLanguage(guildChannel.Guild, guildChannel) : Language.EnglishUS;
 
-            // Modify the message to say that it has timed out
-            await message.TargetMessage.ModifyAsync(p =>
+            // Modify the message to say that it has timed out if needed
+            if (isBecauseInactive)
             {
-                p.Content = null;
-                p.Embed = new EmbedBuilder()
-                            .WithTitle(Localizer.Localize("discord.interactive_timeout.title", language))
-                            .WithDescription(Localizer.Localize("discord.interactive_timeout.description", language))
-                            .Build();
-            });
+                await message.TargetMessage.ModifyAsync(p =>
+                {
+                    p.Content = null;
+                    p.Embed = new EmbedBuilder()
+                                .WithTitle(Localizer.Localize("discord.interactive_timeout.title", language))
+                                .WithDescription(Localizer.Localize("discord.interactive_timeout.description", language))
+                                .Build();
+                });
+            }
 
 done:
             // Release the semaphore
@@ -464,7 +467,7 @@ done:
             InteractiveFlowSemaphore.Release();
         }
 
-        public static async Task DeactivateInteractiveFlow(InteractiveFlow interactiveFlow)
+        public static async Task DeactivateInteractiveFlow(InteractiveFlow interactiveFlow, bool isBecauseInactive = false)
         {
             // Acquire the semaphore
             await InteractiveFlowSemaphore.WaitAsync();
@@ -475,7 +478,7 @@ done:
             // Deactivate the current interactive message if needed
             if (isSuccess && interactiveFlow.CurrentInteractiveMessage != null && interactiveFlow.CurrentInteractiveMessage.IsActive)
             {
-                await DeactivateInteractiveMessage(interactiveFlow.CurrentInteractiveMessage);
+                await DeactivateInteractiveMessage(interactiveFlow.CurrentInteractiveMessage, isBecauseInactive);
             }
             
             // Release the semaphore
@@ -516,7 +519,7 @@ done:
             // Deactivate all
             foreach (InteractiveFlow flow in inactiveFlows)
             {
-                await DeactivateInteractiveFlow(flow);
+                await DeactivateInteractiveFlow(flow, true);
             }
 
             // Acquire the message semaphore
@@ -531,7 +534,7 @@ done:
             // Deactivate all
             foreach (InteractiveMessage message in inactiveMessages)
             {
-                await DeactivateInteractiveMessage(message);
+                await DeactivateInteractiveMessage(message, true);
             }
         }
 
