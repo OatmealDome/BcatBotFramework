@@ -121,6 +121,8 @@ namespace BcatBotFramework.Core.Config
             CompletedOneTimeTasks = new List<string>();
             FirstRunCompleted = false;
             IsProduction = false;
+
+            SetAppSpecificDefaults();
         }
 
         protected abstract void SetAppSpecificDefaults();
