@@ -28,7 +28,6 @@ namespace BcatBotFramework.Social.Discord
         private static CommandService CommandService = null;
         private static readonly SemaphoreSlim InteractiveMessageSemaphore = new SemaphoreSlim(1, 1);
         private static readonly SemaphoreSlim InteractiveFlowSemaphore = new SemaphoreSlim(1, 1);
-        private static uint InteractiveMessageJobCounter = 0;
 
         // Members
         public static bool IsReady
@@ -100,9 +99,6 @@ namespace BcatBotFramework.Social.Discord
             // Create the interactive messages list
             ActiveInteractiveMessages = new List<InteractiveMessage>();
 
-            // Set the counter
-            InteractiveMessageJobCounter = 0;
-
             // Create the flows list
             ActiveInteractiveFlows = new List<InteractiveFlow>();
 
@@ -128,7 +124,6 @@ namespace BcatBotFramework.Social.Discord
             IsReady = false;
             ActiveInteractiveMessages = null;
             ActiveInteractiveFlows = null;
-            InteractiveMessageJobCounter = 0;
         }
 
         private static async Task ClientReady()
