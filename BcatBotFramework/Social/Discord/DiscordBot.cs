@@ -377,7 +377,7 @@ namespace BcatBotFramework.Social.Discord
                     SocketTextChannel textChannel = socketGuild.GetTextChannel(pair.Key);
 
                     // Get the Embed if it exists
-                    Embed embed = localizedEmbeds != null ? localizedEmbeds[pair.Value.GetSetting("language")] : null;
+                    Embed embed = localizedEmbeds != null ? localizedEmbeds[(Language)pair.Value.GetSetting("language")] : null;
 
                     // Send the message if possible
                     try
