@@ -156,12 +156,12 @@ namespace BcatBotFramework.Social.Discord
                             if (channelSettings != null)
                             {
                                 // Return the channel's language
-                                return channelSettings.GetSetting("language");
+                                return (Language)channelSettings.GetSetting("language");
                             }
                         }
 
                         // Return the guild's default language
-                        return guildSettings.GetSetting("default_language");
+                        return (Language)guildSettings.GetSetting("default_language");
                     }
                 }
 
@@ -263,7 +263,7 @@ namespace BcatBotFramework.Social.Discord
                 // Send a message to this server that their guild has been deregistered
                 Embed embed = new EmbedBuilder()
                     .WithTitle("Warning")
-                    .WithDescription(Localizer.Localize("discord.guild.deregister", data.GetSetting("language")))
+                    .WithDescription(Localizer.Localize("discord.guild.deregister", (Language)data.GetSetting("language")))
                     .WithColor(Color.Orange)
                     .Build();
                 
