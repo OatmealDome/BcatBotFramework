@@ -49,6 +49,7 @@
     "discord.setup.goodbye.prompt_last_deleted": "**Your settings have been saved. If you want to add more channels, you can run the setup command again.**\n\nSetup has been closed.",
     "discord.language_chooser.default_prompt": "Select a language.",
     "localizer.missing_localizable": "Missing string {0} - report this bug to support@oatmealdome.me",
+    "localizer.bad_special_string": "Unknown special string {0} - report this bug to support@oatmealdome.me",
     "nintendo_platform.ds": "Nintendo DS",
     "nintendo_platform.wii": "Wii",
     "nintendo_platform.threeds": "Nintendo 3DS",

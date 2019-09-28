@@ -350,6 +350,11 @@ namespace BcatBotFramework.Social.Discord
             return DiscordClient.GetChannel(channelId);
         }
 
+        public static string GetName()
+        {
+            return DiscordClient.CurrentUser.Username;
+        }
+
         public static async Task SendNotificationAsync(Predicate<DynamicSettingsData> shouldPost, string message = null, Dictionary<Language, Embed> localizedEmbeds = null)
         {
             // Make a copy of the GuildSettings list just in case it is modified while notifications are sent

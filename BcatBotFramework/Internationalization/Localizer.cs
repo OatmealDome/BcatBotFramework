@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using BcatBotFramework.Core.Config;
+using BcatBotFramework.Social.Discord;
 using Newtonsoft.Json;
 using Nintendo.Bcat;
 
@@ -84,18 +86,48 @@ namespace BcatBotFramework.Internationalization
             if (Localizations[language].TryGetValue(key, out string value))
             {
                 // Return the value
-                return value;
+                return ParseSpecialStrings(value, language);
             }
 
             // Try to get the localization in en-US
             if (Localizations[Language.EnglishUS].TryGetValue(key, out string englishValue))
             {
                 // Return the value
-                return englishValue;
+                return ParseSpecialStrings(englishValue, language);
             }
 
             // Return the error message
             return string.Format(Localize("localizer.missing_localizable", language), key);
+        }
+
+        public static string ParseSpecialStrings(string localizedValue, Language language)
+        {
+            // Match every special string
+            foreach (Match match in Regex.Matches(localizedValue, @"{\$.*?}"))
+            {
+                // Remove the brackets and dollar sign
+                string specialStr = match.Value.Substring(2, match.Value.Length - 3);
+
+                // Get the appropriate replacement
+                string replacement;
+                switch (specialStr)
+                {
+                    case "BOT_NAME":
+                        replacement = DiscordBot.GetName();
+                        break;
+                    case "BOT_COMMAND_PREFIX": 
+                        replacement = Configuration.LoadedConfiguration.DiscordConfig.CommandPrefix;
+                        break;
+                    default:
+                        replacement = Localizer.Localize("localizer.bad_special_string", language);
+                        break;
+                }
+
+                // Replace the special string
+                localizedValue = localizedValue.Replace(match.Value, replacement);
+            }
+
+            return localizedValue;
         }
 
         public static Dictionary<Language, string> LocalizeToAllLanguages(string key)
