@@ -109,7 +109,7 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
             }
 
             // Check if this already exists as settings
-            if (Configuration.LoadedConfiguration.DiscordConfig.GuildSettings.SelectMany(g => g.ChannelSettings.Keys).Where(id => id == channelId).Count() != 0)
+            if (SetupFlow.GuildSettings.ChannelSettings.Where(p => p.Key == channelId).Count() != 0)
             {
                 await DiscordUtil.SendErrorMessageByLocalizedDescription(guild, this.Channel, "discord.setup.enter_channel.already_exists");
 
