@@ -70,6 +70,9 @@ namespace BcatBotFramework.Scheduler.Job
                 // Save the configuration
                 Configuration.LoadedConfiguration.Write();
 
+                // Schedule the RecurringHousekeepingJob
+                await QuartzScheduler.ScheduleJob<RecurringHousekeepingJob>("Normal", Configuration.LoadedConfiguration.JobSchedules["Recurring"]);
+
                 // Schedule jobs
                 await SchedulePostBootJobs();
             }
