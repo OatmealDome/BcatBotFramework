@@ -181,7 +181,7 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
 
                     break;
                 case SetupFlowPage.SelectNotifications:
-                    CurrentInteractiveMessage = (InteractiveMessage)Activator.CreateInstance(TypeUtils.GetSubclassOfType<SetupNotificationsSelectorMessage>(), this, this.User, LastPageIdx != (int)SetupFlowPage.EnterChannel ? CurrentInteractiveMessage.TargetMessage : null);
+                    CurrentInteractiveMessage = (InteractiveMessage)Activator.CreateInstance(TypeUtils.GetSubclassOfType<SetupNotificationsSelectorMessage>(), this, this.User, LastPageIdx != (int)SetupFlowPage.SelectLanguage && ValidLanguages.Count() != 1 ? CurrentInteractiveMessage.TargetMessage : null);
 
                     break;
                 case SetupFlowPage.Exit:
