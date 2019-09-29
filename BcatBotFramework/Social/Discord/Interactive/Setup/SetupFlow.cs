@@ -62,6 +62,12 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
             set;
         } = null;
 
+        public bool ShouldSendNewMessage
+        {
+            get;
+            set;
+        } = false;
+
         public SetupFlow(IUser user, IGuild guild, ISocketMessageChannel channel, IEnumerable<Language> validLangs) : base(user, channel)
         {
             Guild = guild;
@@ -75,6 +81,23 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
             if (CurrentInteractiveMessage != null)
             {
                 await DiscordBot.DeactivateInteractiveMessage(CurrentInteractiveMessage);
+            }
+
+            // Check if a new message should be sent
+            IUserMessage messageToModify;
+            if (ShouldSendNewMessage || CurrentInteractiveMessage == null)
+            {
+                messageToModify = null;
+            }
+            else
+            {
+                messageToModify = CurrentInteractiveMessage.TargetMessage;
+            }
+
+            // Flip the message flag if needed
+            if (ShouldSendNewMessage)
+            {
+                ShouldSendNewMessage = false;
             }
             
             switch ((SetupFlowPage)page)
@@ -100,14 +123,7 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                         goto case SetupFlowPage.ServerLanguageSelect;
                     }
                 case SetupFlowPage.ModeSelect:
-                    if (CurrentInteractiveMessage != null && LastPageIdx != (int)SetupFlowPage.EnterChannel)
-                    {
-                        CurrentInteractiveMessage = new SetupModeSelectMessage(this, this.User, CurrentInteractiveMessage.TargetMessage);
-                    }
-                    else
-                    {
-                        CurrentInteractiveMessage = new SetupModeSelectMessage(this, this.User);
-                    }
+                    CurrentInteractiveMessage = new SetupModeSelectMessage(this, this.User, messageToModify);
                     
                     break;
                 case SetupFlowPage.ServerLanguageSelect:
@@ -124,7 +140,7 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                         goto case SetupFlowPage.EnterChannel;
                     }
 
-                    CurrentInteractiveMessage = new LanguageChooserMessage(User, ValidLanguages, async (language) =>
+                    CurrentInteractiveMessage = new LanguageChooserMessage(User, messageToModify, ValidLanguages, async (language) =>
                     {
                         // Set chosen language
                         GuildSettings.SetSetting("default_language", language);
@@ -138,22 +154,15 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
 
                     break;
                 case SetupFlowPage.ChannelChooser:
-                    CurrentInteractiveMessage = new SetupChannelChooserMessage(this, this.User, CurrentInteractiveMessage.TargetMessage);
+                    CurrentInteractiveMessage = new SetupChannelChooserMessage(this, this.User, messageToModify);
 
                     break;
                 case SetupFlowPage.EnterChannel:
-                    if (CurrentInteractiveMessage != null)
-                    {
-                        CurrentInteractiveMessage = new SetupEnterChannelMessage(this, this.User, CurrentInteractiveMessage.TargetMessage);
-                    }
-                    else
-                    {
-                        CurrentInteractiveMessage = new SetupEnterChannelMessage(this, this.User);
-                    }
+                    CurrentInteractiveMessage = new SetupEnterChannelMessage(this, this.User, messageToModify);
 
                     break;
                 case SetupFlowPage.SelectEditMode:
-                    CurrentInteractiveMessage = new SetupEditModeSelectMessage(this, this.User, CurrentInteractiveMessage.TargetMessage);
+                    CurrentInteractiveMessage = new SetupEditModeSelectMessage(this, this.User, messageToModify);
                     
                     break;
                 case SetupFlowPage.SelectLanguage:
@@ -167,13 +176,17 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                         goto case SetupFlowPage.SelectNotifications;
                     }
 
-                    // Get the target message
-                    IUserMessage targetMessage = LastPageIdx == (int)SetupFlowPage.SelectEditMode ? CurrentInteractiveMessage.TargetMessage : null;
-
-                    CurrentInteractiveMessage = new LanguageChooserMessage(User, targetMessage, ValidLanguages, async (language) =>
+                    CurrentInteractiveMessage = new LanguageChooserMessage(User, messageToModify, ValidLanguages, async (language) =>
                     {
                         // Set chosen language
                         ChannelSettings.SetSetting("language", language);
+
+                        // Check if the message to modify is null
+                        if (messageToModify == null)
+                        {
+                            // Reflip the new message flag
+                            ShouldSendNewMessage = true;
+                        }
 
                         // Go to next page
                         await SetPage((int)SetupFlowPage.SelectNotifications);
@@ -181,7 +194,7 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
 
                     break;
                 case SetupFlowPage.SelectNotifications:
-                    CurrentInteractiveMessage = (InteractiveMessage)Activator.CreateInstance(TypeUtils.GetSubclassOfType<SetupNotificationsSelectorMessage>(), this, this.User, LastPageIdx != (int)SetupFlowPage.SelectLanguage && ValidLanguages.Count() != 1 ? CurrentInteractiveMessage.TargetMessage : null);
+                    CurrentInteractiveMessage = (InteractiveMessage)Activator.CreateInstance(TypeUtils.GetSubclassOfType<SetupNotificationsSelectorMessage>(), this, this.User, messageToModify);
 
                     break;
                 case SetupFlowPage.Exit:

@@ -146,6 +146,9 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                 return false;
             }
 
+            // Set the new message flag
+            SetupFlow.ShouldSendNewMessage = true;
+
             if (SetupFlow.ChannelSettings == null)
             {
                 // Create a DynamicSettingsData instance
