@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using BcatBotFramework.Internationalization;
 using Discord;
@@ -21,17 +22,37 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
 
         public override async Task AddReactions()
         {
-            await this.TargetMessage.AddReactionsAsync(new IEmote[] { EMOTE_NOTIFICATIONS, EMOTE_LANGUAGE, EMOTE_CHANGE_TARGET, EMOTE_EXIT });
+            if (SetupFlow.ValidLanguages.Count() > 1)
+            {
+                await this.TargetMessage.AddReactionsAsync(new IEmote[] { EMOTE_NOTIFICATIONS, EMOTE_LANGUAGE, EMOTE_CHANGE_TARGET, EMOTE_EXIT });
+            }
+            else
+            {
+                await this.TargetMessage.AddReactionsAsync(new IEmote[] { EMOTE_NOTIFICATIONS, EMOTE_CHANGE_TARGET, EMOTE_EXIT });
+            }
+            
         }
 
         public override MessageProperties CreateMessageProperties()
         {
+            // Create start of description
+            string description = $"{Localizer.Localize("discord.setup.edit_mode_selector.prompt", SetupFlow.DefaultLanguage)}\n\n{EMOTE_NOTIFICATIONS.Name} {Localizer.Localize("discord.setup.edit_mode_selector.notifications", SetupFlow.DefaultLanguage)}";
+            
+            // Append language button if needed
+            if (SetupFlow.ValidLanguages.Count() > 1)
+            {
+                description += $"\n{EMOTE_LANGUAGE.Name} {Localizer.Localize("discord.setup.edit_mode_selector.language", SetupFlow.DefaultLanguage)}";
+            }
+
+            // Append final
+            description += $"\n{EMOTE_CHANGE_TARGET.Name} {Localizer.Localize("discord.setup.edit_mode_selector.change_target", SetupFlow.DefaultLanguage)}\n\n{EMOTE_EXIT.Name} {Localizer.Localize("discord.setup.edit_mode_selector.exit", SetupFlow.DefaultLanguage)}";
+            
             return new MessageProperties()
             {
                 Content = null,
                 Embed = new EmbedBuilder()
                             .WithTitle(Localizer.Localize("discord.setup.edit_mode_selector.title", SetupFlow.DefaultLanguage))
-                            .WithDescription($"{Localizer.Localize("discord.setup.edit_mode_selector.prompt", SetupFlow.DefaultLanguage)}\n\n{EMOTE_NOTIFICATIONS.Name} {Localizer.Localize("discord.setup.edit_mode_selector.notifications", SetupFlow.DefaultLanguage)}\n{EMOTE_LANGUAGE.Name} {Localizer.Localize("discord.setup.edit_mode_selector.language", SetupFlow.DefaultLanguage)}\n{EMOTE_CHANGE_TARGET.Name} {Localizer.Localize("discord.setup.edit_mode_selector.change_target", SetupFlow.DefaultLanguage)}\n\n{EMOTE_EXIT.Name} {Localizer.Localize("discord.setup.edit_mode_selector.exit", SetupFlow.DefaultLanguage)}")
+                            .WithDescription(description)
                             .Build()
             };
         }
@@ -64,5 +85,6 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
         {
             return Task.FromResult(false);
         }
+
     }
 }
