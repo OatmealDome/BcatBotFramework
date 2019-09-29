@@ -65,29 +65,21 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                 // Save settings to the config
                 SaveSettings();
 
-                // Modify the message to show saved
-                await ModifyOriginalMessage();
-
                 // Check mode
                 if (SetupFlow.Mode == SetupFlowMode.AddInitial || SetupFlow.Mode == SetupFlowMode.Add)
                 {
-                    // Add this to the config
+                    // Add the settings to the config
                     SetupFlow.GuildSettings.ChannelSettings.TryAdd(SetupFlow.TargetChannelId, SetupFlow.ChannelSettings);
-
-                    // Set a pre-prompt
-                    SetupFlow.ModeSelectPrePromptLocalizable = "discord.setup.mode_select.pre_prompt.edits_saved";
-                    
-                    // Go to the root to recreate the channel list
-                    await SetupFlow.SetPage((int)SetupFlowPage.Root);
                 }
-                else
-                {
-                    // Set a pre-prompt
-                    SetupFlow.ModeSelectPrePromptLocalizable = "discord.setup.mode_select.pre_prompt.edits_not_saved";
 
-                    // Go back to mode select
-                    await SetupFlow.SetPage((int)SetupFlowPage.ModeSelect);
-                }
+                // Modify the message to show saved
+                await ModifyOriginalMessage();
+
+                // Set a pre-prompt
+                SetupFlow.ModeSelectPrePromptLocalizable = "discord.setup.mode_select.pre_prompt.edits_saved";    
+
+                // Go back to mode select
+                await SetupFlow.SetPage((int)SetupFlowPage.ModeSelect);
 
                 return false;
             }
