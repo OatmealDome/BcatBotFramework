@@ -90,17 +90,8 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                 // Check the mode
                 if (SetupFlow.Mode == SetupFlowMode.Edit)
                 {
-                    // Check how many languages there are
-                    if (SetupFlow.ValidLanguages.Count() <= 1)
-                    {
-                        // Go straight to the notifications selector
-                        await SetupFlow.SetPage((int)SetupFlowPage.SelectNotifications);   
-                    }
-                    else
-                    {
-                        // Proceed to the edit mode selector 
-                        await SetupFlow.SetPage((int)SetupFlowPage.SelectEditMode);
-                    }
+                    // Proceed to the edit mode selector 
+                    await SetupFlow.SetPage((int)SetupFlowPage.SelectEditMode);
                 }
                 else if (SetupFlow.Mode == SetupFlowMode.Delete)
                 {
