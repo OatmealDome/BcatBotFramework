@@ -56,6 +56,15 @@ namespace BcatBotFramework.Social.Discord.Command
                 }
             }
 
+            // Test if the user does not permission
+            if (!isAdmin && !((SocketGuildUser)Context.User).GuildPermissions.Has(GuildPermission.ManageGuild))
+            {
+                // Return an error
+                await DiscordUtil.SendErrorMessageByLocalizedDescription(Context.Guild, Context.Channel, "discord.setup.error.no_permission");
+                
+                return;
+            }
+
             // Check if there are already setups running
             if (await DiscordBot.IsSetupFlowRunningInGuild(guild))
             {

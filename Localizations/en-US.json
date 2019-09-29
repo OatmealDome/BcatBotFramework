@@ -15,6 +15,7 @@
     "discord.setup.error.in_dm": "You cannot run this command in a DM.",
     "discord.setup.error.already_running": "Setup is already running in this server. Only one setup can run at a time.",
     "discord.setup.error.guild_not_exist": "Could not find the guild with that ID.",
+    "discord.setup.error.no_permission": "You need the \"Manage Guild\" permission to do run setup.",
     "discord.setup.mode_select.title": "Select Mode",
     "discord.setup.mode_select.pre_prompt.deleted": "**The settings for the channel were deleted.**",
     "discord.setup.mode_select.pre_prompt.edits_saved": "**Your settings have been saved. You can add more channels, edit existing channel settings, remove channels, or exit.**",
