@@ -45,6 +45,15 @@ namespace BcatBotFramework.Social.Discord.Command
             else
             {
                 guild = Context.Guild;
+
+                // Check if this is a DM
+                if (guild == null)
+                {
+                    // Return an error
+                    await DiscordUtil.SendErrorMessageByLocalizedDescription(Context.Guild, Context.Channel, "discord.setup.error.in_dm");
+
+                    return;
+                }
             }
 
             // Check if there are already setups running

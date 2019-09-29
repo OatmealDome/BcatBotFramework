@@ -12,6 +12,7 @@
     "discord.error.unknown": "An unknown error has occurred.",
     "discord.interactive_timeout.title": "Timed Out",
     "discord.interactive_timeout.description": "This command has been closed due to inactivity.",
+    "discord.setup.error.in_dm": "You cannot run this command in a DM.",
     "discord.setup.error.already_running": "Setup is already running in this server. Only one setup can run at a time.",
     "discord.setup.error.guild_not_exist": "Could not find the guild with that ID.",
     "discord.setup.mode_select.title": "Select Mode",
