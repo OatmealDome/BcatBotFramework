@@ -55,6 +55,12 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
             get;
             private set;
         }
+
+        public bool IsAdminMode
+        {
+            get;
+            private set;
+        } = false;
         
         public string ModeSelectPrePromptLocalizable
         {
@@ -68,11 +74,12 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
             set;
         } = false;
 
-        public SetupFlow(IUser user, IGuild guild, ISocketMessageChannel channel, IEnumerable<Language> validLangs) : base(user, channel)
+        public SetupFlow(IUser user, IGuild guild, ISocketMessageChannel channel, IEnumerable<Language> validLangs, bool isAdmin) : base(user, channel)
         {
             Guild = guild;
             ValidLanguages = validLangs;
             DefaultLanguage = DiscordUtil.GetDefaultLanguage(guild, channel);
+            IsAdminMode = isAdmin;
         }
 
         public override async Task SetPageImpl(int page)

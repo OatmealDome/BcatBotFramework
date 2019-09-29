@@ -34,6 +34,11 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
         {
             // Create the prompt
             string prompt = "";
+            if (SetupFlow.IsAdminMode)
+            {
+                prompt += string.Format(Localizer.Localize("discord.setup.mode_select.admin", SetupFlow.DefaultLanguage), SetupFlow.Guild.Name) + "\n\n";
+            }
+
             if (!string.IsNullOrEmpty(SetupFlow.ModeSelectPrePromptLocalizable))
             {
                 prompt += Localizer.Localize(SetupFlow.ModeSelectPrePromptLocalizable, SetupFlow.DefaultLanguage) + "\n\n";
