@@ -107,11 +107,19 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                     // Remove this settings
                     SetupFlow.GuildSettings.ChannelSettings.TryRemove(pair.Key, out DynamicSettingsData data);
 
-                    // Set mode select pre-prompt
-                    SetupFlow.ModeSelectPrePromptLocalizable = "discord.setup.mode_select.pre_prompt.deleted";
+                    // Check if that was the final ChannelSettings
+                    if (SetupFlow.GuildSettings.ChannelSettings.Count() == 0)
+                    {
+                        // Exit
+                        await SetupFlow.SetPage((int)SetupFlowPage.Exit);
+                    }
+                    else
+                    {
+                        // Set mode select pre-prompt
+                        SetupFlow.ModeSelectPrePromptLocalizable = "discord.setup.mode_select.pre_prompt.deleted";
 
-                    // Exit
-                    await SetupFlow.SetPage((int)SetupFlowPage.Exit);
+                        await SetupFlow.SetPage((int)SetupFlowPage.ModeSelect);
+                    }
                 }
             }
 
