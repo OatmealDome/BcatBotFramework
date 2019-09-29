@@ -146,7 +146,7 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                         GuildSettings.SetSetting("default_language", language);
 
                         // Set this SetupFlow's language
-                        DefaultLanguage = ValidLanguages.FirstOrDefault();
+                        DefaultLanguage = language;
 
                         // Go to next page
                         await SetPage((int)SetupFlowPage.EnterChannel);
