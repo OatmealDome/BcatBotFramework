@@ -181,6 +181,11 @@ namespace BcatBotFramework.Social.Discord
             }
         }
 
+        public static bool IsAdministrator(IUser user)
+        {
+            return Configuration.LoadedConfiguration.DiscordConfig.AdministratorIds.Contains(user.Id);
+        }
+
         public static async Task ProcessJoinedGuild(SocketGuild socketGuild)
         {
             // Build an Embed
