@@ -21,9 +21,9 @@ namespace BcatBotFramework.Social.Discord.Command
         [Command("shutdown"), Summary("saves config")]
         public async Task Shutdown()
         {
-            await QuartzScheduler.ScheduleJob<ShutdownJob>("Trigger");
+            await Context.Channel.SendMessageAsync("**[Admin]** Scheduling shutdown");
 
-            await Context.Channel.SendMessageAsync("**[Admin]** Shutdown scheduled");
+            await QuartzScheduler.ScheduleJob<ShutdownJob>("Trigger");
         }
         
     }
