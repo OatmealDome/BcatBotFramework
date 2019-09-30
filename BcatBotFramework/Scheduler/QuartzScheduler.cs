@@ -29,30 +29,12 @@ namespace BcatBotFramework.Scheduler
 
         public static async Task ScheduleJob<T>(string jobName, JobSchedule jsonJobDetail)
         {
-            await ScheduleJob<T>(jobName, jsonJobDetail.TriggerMinute, jsonJobDetail.Interval);
+            await ScheduleJob(typeof(T), jobName, jsonJobDetail.TriggerMinute, jsonJobDetail.Interval);
         }
 
         public static async Task ScheduleJob<T>(string jobName, int triggerMinute, int interval)
         {
-            // Get the Type
-            Type type = typeof(T);
-
-            // Create the job
-            IJobDetail jobDetail = JobBuilder.Create(type)
-                .WithIdentity(type.Name + jobName)
-                .Build();
-
-            // Set up the Trigger
-            ITrigger trigger = TriggerBuilder.Create()
-                .WithIdentity(type.Name + jobName + "Trigger")
-                .StartAt(GetNextTrigger(triggerMinute))
-                .WithSimpleSchedule(builder => builder
-                    .WithIntervalInMinutes(interval)
-                    .RepeatForever())
-                .Build();
-
-            // Schedule the Job
-            await Scheduler.ScheduleJob(jobDetail, trigger);
+            await ScheduleJob(typeof(T), jobName, triggerMinute, interval);
         }
 
         public static async Task ScheduleJob<T>(string jobName, int secondsInterval)
@@ -113,6 +95,31 @@ namespace BcatBotFramework.Scheduler
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity(type.Name + jobName)
                 .StartNow()
+                .Build();
+
+            // Schedule the Job
+            await Scheduler.ScheduleJob(jobDetail, trigger);
+        }
+
+        public static async Task ScheduleJob(Type type, string jobName, JobSchedule schedule)
+        {
+            await ScheduleJob(type, jobName, schedule.TriggerMinute, schedule.Interval);
+        }
+
+        public static async Task ScheduleJob(Type type, string jobName, int triggerMinute, int interval)
+        {
+            // Create the job
+            IJobDetail jobDetail = JobBuilder.Create(type)
+                .WithIdentity(type.Name + jobName)
+                .Build();
+
+            // Set up the Trigger
+            ITrigger trigger = TriggerBuilder.Create()
+                .WithIdentity(type.Name + jobName + "Trigger")
+                .StartAt(GetNextTrigger(triggerMinute))
+                .WithSimpleSchedule(builder => builder
+                    .WithIntervalInMinutes(interval)
+                    .RepeatForever())
                 .Build();
 
             // Schedule the Job
