@@ -130,6 +130,10 @@ namespace BcatBotFramework.Social.Discord.Interactive.Setup
                         goto case SetupFlowPage.ServerLanguageSelect;
                     }
                 case SetupFlowPage.ModeSelect:
+                    // Reset some variables
+                    TargetChannelId = 0;
+                    ChannelSettings = null;
+
                     CurrentInteractiveMessage = new SetupModeSelectMessage(this, this.User, messageToModify);
                     
                     break;
