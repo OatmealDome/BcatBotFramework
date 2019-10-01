@@ -25,7 +25,7 @@ namespace BcatBotFramework.Scheduler.Job
                 // Run one-time tasks
                 await DiscordBot.LoggingChannel.SendMessageAsync($"**[BootHousekeepingJob]** Running one-time tasks");
 
-                foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(OneTimeTask))))
+                foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(OneTimeTask)) && !x.IsAbstract))
                 {
                     // Create a new instance and run it
                     await ((OneTimeTask)Activator.CreateInstance(type)).RunImpl();
